@@ -23,12 +23,12 @@
 
 namespace DpdClassic\Form;
 
-use DpdClassic\DpdClassic;
-use Symfony\Component\Validator\Constraints\Regex;
-use Thelia\Form\BaseForm;
-use Thelia\Core\Translation\Translator;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use DpdClassic\Controller\ExportExaprintController;
+use DpdClassic\DpdClassic;
+use Thelia\Core\Translation\Translator;
+use Thelia\Form\BaseForm;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 /**
  * Class ExportExaprintForm
@@ -44,7 +44,7 @@ class ExportExaprintForm extends BaseForm
 
     protected function buildForm()
     {
-        // Add value(s) if Config/exportdat.json exists
+        // Add value(s) if Config/sender.json exists
 
         if (is_readable(ExportExaprintController::getJSONpath())) {
             $values = json_decode(file_get_contents(ExportExaprintController::getJSONpath()), true);

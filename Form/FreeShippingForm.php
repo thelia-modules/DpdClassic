@@ -30,7 +30,7 @@ class FreeShippingForm extends BaseForm
                 "freeshipping",
                 "checkbox",
                 [
-                    'data' => $freeShipping,
+                    'data' => boolval($freeShipping),
                     'label' => Translator::getInstance()->trans("Activate free shipping: ", [], DpdClassic::DOMAIN_NAME)
                 ])
             ;

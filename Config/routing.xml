@@ -9,7 +9,7 @@
     </route>
 
     <route id="dpdclassic.export" path="/admin/module/DpdClassic/export" methods="post">
-        <default key="_controller">DpdClassic:Export:exportFileAction</default>
+        <default key="_controller">DpdClassic:Export:exportFile</default>
     </route>
 
     <route id="dpdclassic.updatesender" path="/admin/module/DpdClassic/update-sender" methods="post">

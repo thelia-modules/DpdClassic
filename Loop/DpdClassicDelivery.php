@@ -33,7 +33,7 @@ use DpdClassic\DpdClassic;
  * @author Thelia <info@thelia.net>
  * @contributor Etienne Perriere <eperriere@openstudio.fr>
  */
-class DpdPickupDelivery extends Delivery
+class DpdClassicDelivery extends Delivery
 {
     public function parseResults(LoopResult $loopResult)
     {

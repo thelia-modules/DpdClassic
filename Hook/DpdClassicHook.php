@@ -19,7 +19,6 @@ class DpdClassicHook extends BaseHook
 
     public function onModuleConfigJs(HookRenderEvent $event)
     {
-        die('TAZAZAZAZAZAZAZAZAZAZA');
-        $event->add($this->render('dpdclassic-config-js.html'));
+        $event->add($this->render('assets/js/dpdclassic-config-js.html'));
     }
 }

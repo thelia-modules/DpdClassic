@@ -2,7 +2,8 @@
 
 namespace DpdClassic\Controller;
 
-use DpdClassic\Model\DpdclassicFreeshipping;
+use DpdClassic\DpdClassic;
+use DpdClassic\Form\FreeShippingForm;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Thelia\Controller\Admin\BaseAdminController;
@@ -23,15 +24,15 @@ class FreeShippingController extends BaseAdminController
             return $response;
         }
 
-        $form = $this->createForm("dpdclassic_freeshipping_form");
+        $form = new FreeShippingForm($this->getRequest());
         $response=null;
 
         try {
             $vform = $this->validateForm($form);
             $data = $vform->get('freeshipping')->getData();
 
-            $save = new DpdclassicFreeshipping();
-            $save->setActive(!empty($data))->save();
+            DpdClassic::setConfigValue('freeshipping', ($data) ? 'true' : 'false');
+
             $response = Response::create('');
         } catch (\Exception $e) {
             $response = JsonResponse::create(array("error"=>$e->getMessage()), 500);

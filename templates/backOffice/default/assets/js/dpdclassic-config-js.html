@@ -5,6 +5,7 @@
 <script>
     $(document).ready(function() {
         $(".freeshipping-activation-dpdclassic").bootstrapSwitch();
+
         $(".freeshipping-activation-dpdclassic").on("switch-change", function(e, data){
             var is_checked = data.value;
             var form = $("#freeshippingform");
@@ -14,39 +15,42 @@
                 url: form.attr('action'),
                 type: form.attr('method'),
                 data: form.serialize()
-            }).done(function(){
+            })
+            .done(function(){
                 $("#loading-event").remove();
             })
-                    .success(function() {
-                        if (is_checked) {
-                            $('#config-btn-0').removeClass('disabled');
-                            $('#table-prices-icirelais').hide('slow');
-                        } else {
-                            $('#config-btn-0').addClass('disabled');
-                            $('#table-prices-icirelais').show('slow');
-                        }
-                    })
-                    .fail(function(jqXHR, textStatus, errorThrown){
-                        $("#loading-event").remove();
-                        $('#freeshipping-failed-body').html(jqXHR.responseJSON.error);
-                        $("#freeshipping-failed").modal("show");
-                    });
-
+            .success(function() {
+                if (is_checked) {
+                    $('#config-btn-0').removeClass('disabled');
+                    $('#table-prices-icirelais').hide('slow');
+                } else {
+                    $('#config-btn-0').addClass('disabled');
+                    $('#table-prices-icirelais').show('slow');
+                }
+            })
+            .fail(function(jqXHR, textStatus, errorThrown){
+                $("#loading-event").remove();
+                $('#freeshipping-failed-body').html(jqXHR.responseJSON.error);
+                $("#freeshipping-failed").modal("show");
+            });
         });
 
-        checkboxes = [{loop name="icirelais.get.checkboxes.names" type="dpdclassic.orders"}"{$REF|replace:'.':'-'}",{/loop}];
+        checkboxes = [{loop name="dpdclassic.get.checkboxes.names" type="dpdclassic.orders"}"{$REF|replace:'.':'-'}",{/loop}];
+
         $("#check-all-but").click( function(ev) {
             checkboxes.forEach(function(entry) {
                $("#"+entry).prop('checked', true);
             });
             ev.preventDefault();
         });
+
         $("#uncheck-all-but").click( function(ev) {
             checkboxes.forEach(function(entry) {
                 $("#"+entry).prop('checked', false);
             });
             ev.preventDefault();
         });
+
         $("#reverse-all-but").click( function(ev) {
             checkboxes.forEach(function(entry) {
                 var box=$("#"+entry);
@@ -54,6 +58,7 @@
             });
             ev.preventDefault();
         });
+
         $("button[name=save_mode]").click(function() {
             var value = $("input[name='export_form[new_status_id]']:checked").val();
             if(value == "sent") {

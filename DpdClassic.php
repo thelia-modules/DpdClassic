@@ -12,7 +12,6 @@
 
 namespace DpdClassic;
 
-use DpdClassic\Model\DpdclassicFreeshippingQuery;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Thelia\Exception\OrderException;
 use Thelia\Install\Database;
@@ -65,7 +64,7 @@ class DpdClassic extends AbstractDeliveryModule
 
         $prices = self::getPrices();
 
-        /* check if DpdClassic delivers the asked area */
+        /* Check if DpdClassic delivers the asked area */
         if (isset($prices[$areaId]) && isset($prices[$areaId]["slices"])) {
             $areaPrices = $prices[$areaId]["slices"];
             ksort($areaPrices);
@@ -120,7 +119,7 @@ class DpdClassic extends AbstractDeliveryModule
 
     public static function getPostageAmount($areaId, $weight)
     {
-        $freeShipping = DpdclassicFreeshippingQuery::create()->getLast();
+        $freeShipping = Dpdclassic::getConfigValue('freeshipping');
         $postage=0;
 
         if (!$freeShipping) {

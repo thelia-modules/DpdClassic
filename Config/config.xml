@@ -6,8 +6,6 @@
 
     <loops>
         <loop name="dpdclassic.check.rights" class="DpdClassic\Loop\CheckRightsLoop" />
-        <loop name="dpdclassic.address" class="DpdClassic\Loop\DpdClassicAddress" />
-        <loop name="dpdclassic.around" class="DpdClassic\Loop\DpdClassicAround" />
         <loop name="dpdclassic.delivery" class="DpdClassic\Loop\DpdClassicDelivery" />
         <loop name="dpdclassic.orders" class="DpdClassic\Loop\DpdClassicOrders" />
         <loop name="dpdclassic" class="DpdClassic\Loop\DpdClassicPrice" />
@@ -29,10 +27,6 @@
     </hooks>
 
     <services>
-        <service id="hook.order.module" class="DpdClassic\EventListeners\SetDeliveryModule" scope="request">
-            <argument type="service" id="request"/>
-            <tag name="kernel.event_subscriber"/>
-        </service>
         <service id="send.dpdclassic.mail" class="DpdClassic\EventListeners\SendEMail" scope="request">
             <argument type="service" id="thelia.parser" />
             <argument type="service" id="mailer"/>

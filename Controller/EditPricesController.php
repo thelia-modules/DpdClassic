@@ -37,7 +37,7 @@ use Thelia\Core\Security\AccessManager;
  */
 class EditPricesController extends BaseAdminController
 {
-    public function editPrices()
+    public function editPricesAction()
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), array('DpdClassic'), AccessManager::UPDATE)) {
             return $response;
@@ -95,11 +95,14 @@ class EditPricesController extends BaseAdminController
             throw new \ErrorException("Arguments are missing or invalid");
         }
 
-        return $this->redirectToRoute("admin.module.configure", array(),
-            array( 'module_code'=>"DpdClassic",
+        return $this->generateRedirectFromRoute(
+            "admin.module.configure",
+            [],
+            [
+                'module_code'=>"DpdClassic",
                 'current_tab'=>"price_slices_tab",
                 '_controller' => 'Thelia\\Controller\\Admin\\ModuleController::configureAction'
-            )
+            ]
         );
     }
 }
