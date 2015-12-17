@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="dpdclassic.editprices" path="/admin/module/DpdClassic/edit-prices" methods="post">
+        <default key="_controller">DpdClassic:EditPrices:editPrices</default>
+    </route>
+
+    <route id="dpdclassic.export" path="/admin/module/DpdClassic/export" methods="post">
+        <default key="_controller">DpdClassic:Export:exportFileAction</default>
+    </route>
+
+    <route id="dpdclassic.updatesender" path="/admin/module/DpdClassic/update-sender" methods="post">
+        <default key="_controller">DpdClassic:ExportExaprint:updateSender</default>
+    </route>
+
+    <route id="dpdclassic.freeshipping" path="/admin/module/DpdClassic/freeshipping" methods="post">
+        <default key="_controller">DpdClassic:FreeShipping:changeFreeShipping</default>
+    </route>
+
+    <route id="dpdclassic.import" path="/admin/module/DpdClassic/import" methods="post">
+        <default key="_controller">DpdClassic:Import:importFile</default>
+    </route>
+
+</routes>
