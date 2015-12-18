@@ -1,6 +1,7 @@
 # Dpd Classic
 
-Add a short description here. You can also add a screenshot if needed.
+- Home delivery with DPD
+- Export / import orders
 
 ## Installation
 
@@ -11,7 +12,7 @@ Add a short description here. You can also add a screenshot if needed.
 
 ### Composer
 
-Add it in your main thelia composer.json file
+Add it in your main thelia composer.json file:
 
 ```
 composer require thelia/dpd-classic-module:~1.0
@@ -19,7 +20,17 @@ composer require thelia/dpd-classic-module:~1.0
 
 ## Usage
 
-Explain here how to use your module, how to configure it, etc.
+Once activated, you have to configure the module.
+
+In the "Configure sender address", set the address from where orders will be sent (mainly your enterprise address).
+
+In the "Price slices" tab, configure shipping fees depending on the cart's weight. You can also activate free shipping here.
+
+Don't forget to assign the module to your shipping zones.
+
+When customers order with this delivery method and when their orders are paid, orders appear in the "Export" tab. Here you can export them and select a new status for them.
+
+Once you have exported orders and set them a delivery reference, you can import them in the "Import" tab.
 
 ## Hook
 

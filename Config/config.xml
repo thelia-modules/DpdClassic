@@ -23,6 +23,7 @@
         <hook id="dpdclassic.hook" class="DpdClassic\Hook\DpdClassicHook" scope="request">
             <tag name="hook.event_listener" event="module.configuration" type="back" method="onModuleConfig" />
             <tag name="hook.event_listener" event="module.config-js" type="back" method="onModuleConfigJs" />
+            <tag name="hook.event_listener" event="order.tab-content" type="back" method="onOrderModuleTab" />
         </hook>
     </hooks>
 

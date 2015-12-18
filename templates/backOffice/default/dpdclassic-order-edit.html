@@ -1,0 +1,29 @@
+{loop type="order" name="order.tracking" id=$order_id}
+    {loop name="tracking" type="dpdclassic.urltracking" ref=$REF}
+        <br/>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {intl l="Export file for this order"}
+            </div>
+            <div class="panel-body">
+
+                {form name="export_exaprint_form"}
+                    <form action="{url path="/admin/module/DpdClassic/export"}" method="post">
+                        {form_hidden_fields form=$form}
+                        {form_field form=$form field="new_status_id"}
+                            <input type="hidden" name="{$name}" value="nochange" />
+                        {/form_field}
+
+                        {form_field form=$form field={$REF|replace:'.':'-'}}
+                            <input type="hidden" name="{$name}" value="true" />
+                        {/form_field}
+                        <button type="submit" name="export_order" value="stay" class="form-submit-button btn btn-sm btn-default" title="{intl l='Export'}">{intl l='Export'}</button>
+                    </form>
+                {/form}
+                <br/>
+
+                {intl l="Track parcel"} <a href="{$URL}">{intl l="here"}</a>
+            </div>
+        </div>
+    {/loop}
+{/loop}

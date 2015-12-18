@@ -21,4 +21,9 @@ class DpdClassicHook extends BaseHook
     {
         $event->add($this->render('assets/js/dpdclassic-config-js.html'));
     }
+
+    public function onOrderModuleTab(HookRenderEvent $event)
+    {
+        $event->add($this->render('dpdclassic-order-edit.html'));
+    }
 }
