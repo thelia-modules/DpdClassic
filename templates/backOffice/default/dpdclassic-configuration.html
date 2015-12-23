@@ -134,6 +134,11 @@
                                                 </label>
                                             </td>
                                             <td>
+                                                {loop type='customer' name='pickup.customer' id=$CUSTOMER}
+                                                    {$LASTNAME} {$FIRSTNAME}
+                                                {/loop}
+                                            </td>
+                                            <td>
                                                 {format_date date=$CREATE_DATE output="datetime"}
                                             </td>
                                             <td class="text-right">
