@@ -81,6 +81,14 @@ class ExportForm extends BaseForm
                 ->add(
                     $orderRef . "-assur",
                     'checkbox'
+                )
+                ->add(
+                    $orderRef . "-pkgNumber",
+                    'number'
+                )
+                ->add(
+                    $orderRef . "-pkgWeight",
+                    'number'
                 );
         }
     }
