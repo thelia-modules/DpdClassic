@@ -117,6 +117,12 @@
                                             {intl l="Total taxed amount"}
                                         </th>
                                         <th class="text-center">
+                                            {intl l="Number of packages"}
+                                        </th>
+                                        <th class="text-center">
+                                            {intl l="Packages weight"}
+                                        </th>
+                                        <th class="text-center">
                                             {intl l="Package warranty"}
                                         </th>
                                         <th class="text-center">
@@ -129,13 +135,11 @@
                                     {loop name="list.dpdclassic.orders" type="dpdclassic.orders"}
                                         <tr>
                                             <td>
-                                                <label for="{$REF|replace:'.':'-'}">
-                                                    {$REF}
-                                                </label>
+                                                <a href="{url path="/admin/order/update/%id" id=$ID}">{$REF}</a>
                                             </td>
                                             <td>
                                                 {loop type='customer' name='dpdclassic.customer' id=$CUSTOMER current='false'}
-                                                    {$LASTNAME} {$FIRSTNAME}
+                                                <a href="{url path="/admin/customer/update" customer_id=$ID}">{$LASTNAME} {$FIRSTNAME}</a>
                                                 {/loop}
                                             </td>
                                             <td>
@@ -145,6 +149,18 @@
                                                 {loop name="list.dpdclassic.getcurrency" type="currency" id=$CURRENCY}
                                                 {format_money number=$TOTAL_TAXED_AMOUNT symbol=$SYMBOL}
                                                 {/loop}
+                                            </td>
+                                            <td>
+                                                {assign var="pkgNbRef" value="`$REF|replace:'.':'-'`-pkgNumber"}
+                                                {form_field form=$form field=$pkgNbRef}
+                                                    <input class="form-control text-center" style="width:70px; margin:auto;" type="text" name="{$name}" value="1" />
+                                                {/form_field}
+                                            </td>
+                                            <td>
+                                                {assign var="pkgW8Ref" value="`$REF|replace:'.':'-'`-pkgWeight"}
+                                                {form_field form=$form field=$pkgW8Ref}
+                                                    <input class="form-control text-center" style="width:70px; margin:auto;" type="text" name="{$name}" value="0" />
+                                                {/form_field}
                                             </td>
                                             {assign var="assurref" value="`$REF|replace:'.':'-'`-assur"}
                                             {form_field form=$form field=$assurref}

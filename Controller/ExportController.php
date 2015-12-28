@@ -34,7 +34,6 @@ use Thelia\Log\Tlog;
 use Thelia\Model\AddressQuery;
 use Thelia\Model\OrderAddressQuery;
 use Thelia\Model\OrderQuery;
-use Thelia\Model\OrderProductQuery;
 use Thelia\Model\CustomerQuery;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Security\AccessManager;
@@ -99,6 +98,7 @@ class ExportController extends BaseAdminController
         )) {
             return $response;
         }
+
         if (is_readable(ExportExaprintController::getJSONpath())) {
             $admici = json_decode(file_get_contents(ExportExaprintController::getJSONpath()), true);
             $keys = array("name", "addr", "zipcode", "city", "tel", "mobile", "mail", "expcode");
@@ -126,6 +126,7 @@ class ExportController extends BaseAdminController
                 500
             );
         }
+
         $exp_name = $admici['name'];
         $exp_address1 = $admici['addr'];
         $exp_address2 = isset($admici['addr2']) ? $admici['addr2'] : "";
@@ -144,6 +145,7 @@ class ExportController extends BaseAdminController
         // FORM VALIDATION
         $form = new ExportForm($this->getRequest());
         $status_id = null;
+
         try {
             $vform = $this->validateForm($form);
             $status_id = $vform->get("new_status_id")->getData();
@@ -163,12 +165,17 @@ class ExportController extends BaseAdminController
             );
         }
 
-        //---
+        // For each selected order
         foreach ($orders as $order) {
             $orderRef = str_replace(".", "-", $order->getRef());
 
             if ($vform->get($orderRef)->getData()) {
+
+                // Get if the package is assured, how many packages there are & their weight
                 $assur_package = $vform->get($orderRef . "-assur")->getData();
+                $pkgNumber = $vform->get($orderRef . '-pkgNumber')->getData();
+                $pkgWeight = $vform->get($orderRef . '-pkgWeight')->getData();
+
                 if ($status_id == "processing") {
                     $event = new OrderEvent($order);
 
@@ -183,6 +190,7 @@ class ExportController extends BaseAdminController
                     $event->setStatus($status->getId());
                     $this->getDispatcher()->dispatch(TheliaEvents::ORDER_UPDATE_STATUS, $event);
                 }
+
                 //Get OrderAddress object - customer's address
                 $address = OrderAddressQuery::create()
                     ->findPK($order->getInvoiceOrderAddressId());
@@ -190,11 +198,6 @@ class ExportController extends BaseAdminController
                 //Get Customer object
                 $customer = CustomerQuery::create()
                     ->findPK($order->getCustomerId());
-
-                //Get OrderProduct object
-                $products = OrderProductQuery::create()
-                    ->filterByOrderId($order->getId())
-                    ->find();
 
                 // Get Customer's cellphone
                 $cellphone = AddressQuery::create()
@@ -204,19 +207,17 @@ class ExportController extends BaseAdminController
                     ->getCellphone();
 
                 //Weigth & price calc
-                $weight = 0.0;
                 $price = 0;
                 $price = $order->getTotalAmount($price, false); // tax = 0 && include postage = false
-                foreach ($products as $p) {
-                    $weight += ((float)$p->getWeight()) * (int)$p->getQuantity();
-                }
-                $weight = floor($weight * 100);
+
+                $pkgWeight = floor($pkgWeight * 100);
+
                 $assur_price = ($assur_package == 'true') ? $price : 0;
-                $date_format = date("d/m/Y", $order->getUpdatedAt()->getTimestamp());
+                $date_format = date("d/m/y", $order->getUpdatedAt()->getTimestamp());
 
                 $res .= self::harmonise($order->getRef(), 'alphanumeric', 35);
                 $res .= self::harmonise("", 'alphanumeric', 2);
-                $res .= self::harmonise($weight, 'numeric', 8);
+                $res .= self::harmonise($pkgWeight, 'numeric', 8);
                 $res .= self::harmonise("", 'alphanumeric', 15);
                 $res .= self::harmonise($customer->getLastname(), 'alphanumeric', 35);
                 $res .= self::harmonise($customer->getFirstname(), 'alphanumeric', 35);
@@ -270,12 +271,8 @@ class ExportController extends BaseAdminController
                     'alphanumeric',
                     35
                 );                                // COMMENTAIRE 3 DE LA COMMANDE
-                $res .= self::harmonise($date_format, 'alphanumeric', 10);
-                $res .= self::harmonise(
-                    $exp_code,
-                    'numeric',
-                    8
-                );                                        // N° COMPTE CHARGEUR ICIRELAIS ?
+                $res .= self::harmonise($date_format.' ', 'alphanumeric', 10);
+                $res .= self::harmonise($exp_code, 'numeric', 8);                               // N° COMPTE CHARGEUR ICIRELAIS ?
                 $res .= self::harmonise("", 'alphanumeric', 35);                                // CODE BARRE
                 $res .= self::harmonise($customer->getRef(), 'alphanumeric', 35);
                 $res .= self::harmonise("", 'alphanumeric', 29);
