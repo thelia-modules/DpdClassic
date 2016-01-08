@@ -23,6 +23,7 @@
 
 namespace DpdClassic\Loop;
 
+use Propel\Runtime\ActiveQuery\Criteria;
 use Thelia\Core\Template\Loop\Order;
 use DpdClassic\DpdClassic;
 use Thelia\Model\OrderQuery;
@@ -39,6 +40,7 @@ class DpdClassicOrders extends Order
     {
         return OrderQuery::create()
             ->filterByDeliveryModuleId(DpdClassic::getModuleId())
-            ->filterByStatusId([DpdClassic::STATUS_PAID, DpdClassic::STATUS_PROCESSING]);
+            ->filterByStatusId([DpdClassic::STATUS_PAID, DpdClassic::STATUS_PROCESSING])
+            ->orderByCreatedAt(Criteria::DESC);
     }
 }
