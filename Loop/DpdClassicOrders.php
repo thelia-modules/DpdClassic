@@ -41,6 +41,6 @@ class DpdClassicOrders extends Order
         return OrderQuery::create()
             ->filterByDeliveryModuleId(DpdClassic::getModuleId())
             ->filterByStatusId([DpdClassic::STATUS_PAID, DpdClassic::STATUS_PROCESSING])
-            ->orderByCreatedAt(Criteria::DESC);
+            ->orderByCreatedAt(Criteria::ASC);
     }
 }
