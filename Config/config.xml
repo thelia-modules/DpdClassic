@@ -17,6 +17,7 @@
         <form name="export_form" class="DpdClassic\Form\ExportForm" />
         <form name="freeshipping_form" class="DpdClassic\Form\FreeShippingForm" />
         <form name="import_form" class="DpdClassic\Form\ImportExaprintForm" />
+        <form name="config_form" class="DpdClassic\Form\ConfigurationForm" />
     </forms>
 
     <hooks>

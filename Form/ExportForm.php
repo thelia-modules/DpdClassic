@@ -42,6 +42,10 @@ class ExportForm extends BaseForm
 
     protected function buildForm()
     {
+        if (null === $data = DpdClassic::getConfigValue('default_status')){
+            $data = DpdClassic::NO_CHANGE;
+        }
+
         $entries = OrderQuery::create()
             ->filterByDeliveryModuleId(DpdClassic::getModuleId())
             ->find();
@@ -53,14 +57,14 @@ class ExportForm extends BaseForm
                 array(
                     'label' => Translator::getInstance()->trans('Change order status to', [], DpdClassic::DOMAIN_NAME),
                     'choices' => array(
-                        "nochange" => Translator::getInstance()->trans("Do not change", [], DpdClassic::DOMAIN_NAME),
-                        "processing" => Translator::getInstance()->trans("Set orders status as processing", [], DpdClassic::DOMAIN_NAME),
-                        "sent" => Translator::getInstance()->trans("Set orders status as sent", [], DpdClassic::DOMAIN_NAME)
+                        DpdClassic::NO_CHANGE => $this->translator->trans("Do not change", [], DpdClassic::DOMAIN_NAME),
+                        DpdClassic::PROCESS => $this->translator->trans("Set orders status as processing", [], DpdClassic::DOMAIN_NAME),
+                        DpdClassic::SEND => $this->translator->trans("Set orders status as sent", [], DpdClassic::DOMAIN_NAME)
                     ),
                     'required' => true,
                     'expanded' => true,
                     'multiple' => false,
-                    'data' => 'nochange'
+                    'data' => $data
                 )
             );
 

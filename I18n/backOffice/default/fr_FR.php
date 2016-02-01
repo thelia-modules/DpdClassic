@@ -6,6 +6,7 @@ return array(
     'Cancel' => 'Annuler',
     'Change orders status after export' => 'Modifier le statut de la commande après l\'export',
     'Check all' => 'Tout cocher',
+    'Configuration' => 'Configuration',
     'Configuration correctly saved' => 'Configuration correctement sauvegardée',
     'Configure DpdClassic' => 'Configurer DpdClassic',
     'Configure sender address' => 'Configurer l\'adresse de l\'expéditeur',

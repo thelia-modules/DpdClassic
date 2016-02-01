@@ -92,11 +92,7 @@ class ExportController extends BaseAdminController
 
     public function exportFileAction()
     {
-        if (null !== $response = $this->checkAuth(
-            array(AdminResources::MODULE),
-            array('DpdClassic'),
-            AccessManager::UPDATE
-        )) {
+        if (null !== $response = $this->checkAuth([AdminResources::MODULE], ['DpdClassic'], AccessManager::UPDATE)) {
             return $response;
         }
 
