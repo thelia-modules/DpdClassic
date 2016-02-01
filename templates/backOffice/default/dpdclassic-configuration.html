@@ -13,7 +13,6 @@
         {/loop}
     </div>
 
-
     {elseloop rel="checkrights"}
 
         {loop type="currency" name="curncy" default_only=1}
@@ -32,9 +31,10 @@
             {if $smarty.get.current_tab eq "price_slices_tab"}
                 {assign var="tab" value="3"}
             {/if}
+            {if $smarty.get.current_tab eq "config"}
+                {assign var="tab" value="4"}
+            {/if}
         {/if}
-
-
 
         <div class="row">
             <div class="col-md-12">
@@ -44,6 +44,7 @@
                     <li class="{if $tab eq "1"}active{/if}"><a data-toggle="tab" href="#import_exaprint">{intl l="Import"}</a></li>
                     <li class="{if $tab eq "2"}active{/if}"><a data-toggle="tab" href="#configure_export_exaprint">{intl l="Configure sender address"}</a></li>
                     <li class="{if $tab eq "3"}active{/if}"><a data-toggle="tab" href="#prices_slices_tab">{intl l="Price slices"}</a></li>
+                    <li class="{if $tab eq "4"}active{/if}"><a data-toggle="tab" href="#configuration_tab">{intl l="Configuration"}</a></li>
                 </ul>
                 <br/>
 
@@ -54,6 +55,53 @@
                 {/if}
 
                 <div class="tab-content">
+
+                    <!-- Configuration tab -->
+                    <div id="configuration_tab" class="tab-pane {if $tab eq "4"}active{/if} form-container">
+                        {form name='config_form'}
+                            <form action="{url path='/admin/module/DpdClassic/config'}" method="post">
+                                {form_hidden_fields form=$form}
+
+                                {if $form_error}
+                                    <div class="alert alert-danger">{$form_error_message}</div>
+                                {/if}
+
+                                {form_field form=$form field="default_status"}
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <label for="nochange">{intl l="Do not change"}</label>&nbsp;
+                                            </td>
+                                            <td>
+                                                <input type="radio" id="nochange" name="{$name}" value="nochange" {if $data eq "nochange"}checked{/if} />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="processing">{intl l="Processing"}</label>&nbsp;
+                                            </td>
+                                            <td>
+                                                <input type="radio" id="processing" name="{$name}" value="processing" {if $data eq "processing"}checked{/if} />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="sent">{intl l="Sent"}</label>&nbsp;
+                                            </td>
+                                            <td>
+                                                <input type="radio" id="sent" name="{$name}" value="sent" {if $data eq "sent"}checked{/if} />
+                                                <span>{intl l="If you choose this option, the exported orders would not be available on this page anymore"}</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                {/form_field}
+
+                                <br>
+                                <button type="submit" name="save_mode" value="stay" class="form-submit-button btn btn-sm btn-default btn-success">{intl l='Save changes'} <span class="glyphicon glyphicon-ok"></span></button>
+
+                            </form>
+                        {/form}
+                    </div><!-- /config tab -->
 
                     <!-- Export tab -->
                     <div id="export_exaprint" class="tab-pane {if $tab eq "0"}active{/if} form-container">
@@ -178,7 +226,7 @@
                                     </tbody>
                                 </table>
 
-                                <button type="submit" name="save_mode" value="stay" class="form-submit-button btn btn-sm btn-primary" title="{intl l='Export'}">{intl l='Export'} <span class="glyphicon glyphicon-ok"></span></button>
+                                <button type="submit" name="save_mode" value="stay" class="form-submit-button btn btn-sm btn-primary">{intl l='Export'} <span class="glyphicon glyphicon-ok"></span></button>
 
                                 <div class="pull-right">
                                     <button type="button" id="check-all-but" title="{intl l="Check all"}" class="btn btn-xs btn-default">{intl l="Check all"}</button>
@@ -331,7 +379,7 @@
                                 {/form_field}
 
                                 <div class="form-group">
-                                    <button type="submit" name="save_mode" value="stay" class="form-submit-button btn btn-sm btn-default btn-success" title="{intl l='Save changes'}">{intl l='Save changes'} <span class="glyphicon glyphicon-ok"></span></button>
+                                    <button type="submit" name="save_mode" value="stay" class="form-submit-button btn btn-sm btn-default btn-success">{intl l='Save changes'} <span class="glyphicon glyphicon-ok"></span></button>
                                 </div>
                             </form>
                         {/form}
@@ -442,11 +490,11 @@
                                                 {include
                                                     file = "includes/generic-confirm-dialog.html"
 
-                                                    dialog_id    = "price_slice_delete_dialog_{$dialog_id}"
+                                                    dialog_id    = "price_slice_delete_dialog_$dialog_id"
                                                     dialog_title = {intl l="Delete a price slice"}
                                                     dialog_message  = {$smarty.capture.delete_dialog nofilter}
 
-                                                    form_action= {url path="/admin/module/DpdClassic/edit-prices"}
+                                                    form_action = {url path="/admin/module/DpdClassic/edit-prices"}
                                                     dialog_ok_label     = {intl l="Delete"}
                                                     dialog_cancel_label = {intl l="Cancel"}
                                                 }

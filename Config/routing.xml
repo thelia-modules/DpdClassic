@@ -24,4 +24,8 @@
         <default key="_controller">DpdClassic:Import:importFile</default>
     </route>
 
+    <route id="dpdclassic.config" path="/admin/module/DpdClassic/config" methods="post">
+        <default key="_controller">DpdClassic:Configuration:configure</default>
+    </route>
+
 </routes>

@@ -12,6 +12,7 @@ return array(
     'Change order status to' => 'Modifier le statut des commandes après l\'export',
     'Do not change' => 'Ne pas changer',
     'DpdClassic Sender\'s code' => 'Code DPD de l\'expéditeur',
+    'Error while updating status' => 'Erreur lors de la mise à jour du statut par défaut',
     'Error while updating the file with sender information' => 'Erreur lors de la mise à jour du fichier expéditeur',
     'Got invalid data : %err' => 'Données invalides reçues : %err',
     'Operation successful. %i orders affected.' => 'Opération effectuée avec succès. %i commandes affectées.',
@@ -26,5 +27,6 @@ return array(
     'Sender\'s zipcode' => 'Code postal  de l\'expéditeur',
     'Set orders status as processing' => 'Traitement',
     'Set orders status as sent' => 'Envoyée',
+    'Sorry, an error occurred: %err' => 'Désolé, une erreur s\'est produite : %err',
     'The file DpdClassic/Config/sender.json is not valid. Please correct it.' => 'Le fichier DpdClassic/Config/sender.json n\'est pas valide. Veuillez le corriger.',
 );
