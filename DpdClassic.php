@@ -131,7 +131,7 @@ class DpdClassic extends AbstractDeliveryModule
 
             /* check if DpdClassic delivers the asked area */
             if (!isset($prices[$areaId]) || !isset($prices[$areaId]["slices"])) {
-                throw new OrderException(
+                throw new DeliveryException(
                     "DPD Classic delivery unavailable for the chosen delivery country",
                     OrderException::DELIVERY_MODULE_UNAVAILABLE
                 );
@@ -144,7 +144,7 @@ class DpdClassic extends AbstractDeliveryModule
             end($areaPrices);
             $maxWeight = key($areaPrices);
             if ($weight > $maxWeight) {
-                throw new OrderException(
+                throw new DeliveryException(
                     sprintf("DPD Classic delivery unavailable for this cart weight (%s kg)", $weight),
                     OrderException::DELIVERY_MODULE_UNAVAILABLE
                 );
