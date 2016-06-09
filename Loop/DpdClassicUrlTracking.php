@@ -23,7 +23,6 @@
 
 namespace DpdClassic\Loop;
 
-use DpdClassic\Controller\ExportExaprintController;
 use DpdClassic\DpdClassic;
 use Thelia\Core\Template\Element\ArraySearchLoopInterface;
 use Thelia\Core\Template\Element\BaseLoop;
@@ -38,13 +37,18 @@ use Thelia\Model\OrderQuery;
  * @package DpdClassic\Loop
  * @author Thelia <info@thelia.net>
  * @contributor Etienne Perriere <eperriere@openstudio.fr>
+ *
+ * @method string getRef
+ *
+ * @deprecated This loop is became useless, you can use the order loop
  */
 class DpdClassicUrlTracking extends BaseLoop implements ArraySearchLoopInterface
 {
     /**
      * @return ArgumentCollection
      */
-    const BASE_URL="http://e-trace.ils-consult.fr/ici-webtrace/webclients.aspx?verknr=%s&versdat=&kundenr=%s&cmd=VERKNR_SEARCH";
+    const BASE_URL = "http://www.dpd.fr/traces_info_%s";
+
     protected function getArgDefinitions()
     {
         return new ArgumentCollection(
@@ -54,24 +58,20 @@ class DpdClassicUrlTracking extends BaseLoop implements ArraySearchLoopInterface
 
     public function buildArray()
     {
-        $path = ExportExaprintController::getJSONpath();
+        $order = OrderQuery::create()->findOneByRef($this->getRef());
 
-        if (is_readable($path) && ($order=OrderQuery::create()->findOneByRef($this->getRef())) !== null
-        && $order->getDeliveryModuleId() === DpdClassic::getModuleId()) {
-
-            $json=json_decode(file_get_contents($path), true);
-
-            return array($this->getRef()=>$json['expcode']);
-        } else {
-            return array();
+        if (null !== $order && $order->getDeliveryModuleId() === DpdClassic::getModuleId()) {
+            return [$order->getRef() => $order->getDeliveryRef()];
         }
+
+        return [];
     }
 
     public function parseResults(LoopResult $loopResult)
     {
         foreach ($loopResult->getResultDataCollection() as $ref => $code) {
             $loopResultRow = new LoopResultRow();
-            $loopResultRow->set("URL", sprintf(self::BASE_URL, $ref, $code));
+            $loopResultRow->set("URL", sprintf(self::BASE_URL, $code));
 
             $loopResult->addRow($loopResultRow);
         }
