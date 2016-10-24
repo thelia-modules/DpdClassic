@@ -27,6 +27,7 @@ use DpdClassic\DpdClassic;
 use Thelia\Form\BaseForm;
 use Thelia\Core\Translation\Translator;
 use Thelia\Model\OrderQuery;
+use Propel\Runtime\ActiveQuery\Criteria;
 
 /**
  * Class ExportForm
@@ -48,6 +49,8 @@ class ExportForm extends BaseForm
 
         $entries = OrderQuery::create()
             ->filterByDeliveryModuleId(DpdClassic::getModuleId())
+            ->filterByStatusId([DpdClassic::STATUS_PAID, DpdClassic::STATUS_PROCESSING])
+            ->orderByCreatedAt(Criteria::DESC)
             ->find();
 
         $this->formBuilder
