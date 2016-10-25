@@ -25,6 +25,7 @@ namespace DpdClassic\Controller;
 
 use DpdClassic\Form\ExportForm;
 use DpdClassic\DpdClassic;
+use Propel\Runtime\ActiveQuery\Criteria;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
@@ -137,6 +138,8 @@ class ExportController extends BaseAdminController
 
         $orders = OrderQuery::create()
             ->filterByDeliveryModuleId(DpdClassic::getModuleId())
+            ->filterByStatusId([DpdClassic::STATUS_PAID, DpdClassic::STATUS_PROCESSING])
+            ->orderByCreatedAt(Criteria::DESC)
             ->find();
 
         // FORM VALIDATION
