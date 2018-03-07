@@ -1,4 +1,4 @@
-{loop type="order" name="order.tracking" id=$order_id}
+{loop type="order" name="order.tracking" id=$order_id exclude_status_code="not_paid,sent,canceled,refunded"}
     {loop name="tracking" type="dpdclassic.urltracking" ref=$REF}
         <br/>
         <div class="panel panel-default">
