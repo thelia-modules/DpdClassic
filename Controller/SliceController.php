@@ -63,7 +63,7 @@ class SliceController extends BaseAdminController
                 if (!empty($requestPrice)) {
                     $price = $this->getFloatVal($requestPrice);
                     if (0 < $price) {
-                        $slice->setPriceMax($price);
+                        $slice->setPrice($price);
                     } else {
                         $messages[] = $this->getTranslator()->trans(
                             'The price value is not valid',
@@ -78,7 +78,7 @@ class SliceController extends BaseAdminController
                 if (!empty($requestWeight)) {
                     $weight = $this->getFloatVal($requestWeight);
                     if (0 < $weight) {
-                        $slice->setWeightMax($weight);
+                        $slice->setWeight($weight);
                     } else {
                         $messages[] = $this->getTranslator()->trans(
                             'The weight value is not valid',
@@ -116,7 +116,7 @@ class SliceController extends BaseAdminController
                 $responseData['slice'] = $slice->toArray(TableMap::TYPE_STUDLYPHPNAME);
             }
         } catch (\Exception $e) {
-            $message[] = $e->getMessage();
+            $messages[] = $e->getMessage();
         }
 
         $responseData['message'] = $messages;

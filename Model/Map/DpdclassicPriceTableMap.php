@@ -77,7 +77,7 @@ class DpdclassicPriceTableMap extends TableMap
     const ID = 'dpdclassic_price.ID';
 
     /**
-     * the column name for the AREA field
+     * the column name for the AREA_ID field
      */
     const AREA_ID = 'dpdclassic_price.AREA_ID';
 
@@ -103,11 +103,11 @@ class DpdclassicPriceTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Area',  'Weight', 'Price', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'area',  'weight', 'price', ),
-        self::TYPE_COLNAME       => array(DpdclassicPriceTableMap::ID, DpdclassicPriceTableMap::AREA,  DpdclassicPriceTableMap::WEIGHT, DpdclassicPriceTableMap::PRICE, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'AREA', 'WEIGHT',  'PRICE', ),
-        self::TYPE_FIELDNAME     => array('id', 'area', 'weight', 'price', ),
+        self::TYPE_PHPNAME       => array('Id', 'AreaId',  'Weight', 'Price', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'areaId',  'weight', 'price', ),
+        self::TYPE_COLNAME       => array(DpdclassicPriceTableMap::ID, DpdclassicPriceTableMap::AREA_ID,  DpdclassicPriceTableMap::WEIGHT, DpdclassicPriceTableMap::PRICE, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'AREA_ID', 'WEIGHT',  'PRICE', ),
+        self::TYPE_FIELDNAME     => array('id', 'area_id', 'weight', 'price', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
@@ -425,4 +425,4 @@ class DpdclassicPriceTableMap extends TableMap
 } // DpdclassicPriceTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-SocolissimoPriceTableMap::buildTableMap();
+DpdclassicPriceTableMap::buildTableMap();
