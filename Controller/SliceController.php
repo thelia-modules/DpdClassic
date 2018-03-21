@@ -121,7 +121,16 @@ class SliceController extends BaseAdminController
 
         $responseData['message'] = $messages;
 
-        return $this->jsonResponse(json_encode($responseData));
+        //return $this->jsonResponse(json_encode($responseData));
+
+        return $this->generateRedirectFromRoute(
+            "admin.module.configure",
+            [],
+            [
+                'module_code'=>"DpdClassic",
+                'current_tab'=>"price_slices_tab",
+                '_controller' => 'Thelia\\Controller\\Admin\\ModuleController::configureAction'
+            ]);
     }
 
     protected function getFloatVal($val, $default = -1)
@@ -176,6 +185,15 @@ class SliceController extends BaseAdminController
             $responseData['message'] = $e->getMessage();
         }
 
-        return $this->jsonResponse(json_encode($responseData));
+        //return $this->jsonResponse(json_encode($responseData));
+
+        return $this->generateRedirectFromRoute(
+            "admin.module.configure",
+            [],
+            [
+                'module_code'=>"DpdClassic",
+                'current_tab'=>"price_slices_tab",
+                '_controller' => 'Thelia\\Controller\\Admin\\ModuleController::configureAction'
+            ]);
     }
 }
