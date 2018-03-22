@@ -412,7 +412,7 @@
                             <div id="table-prices-icirelais" {if $isDpdClassicFreeShipping eq 1} style="display:none;" {/if}>
                                 {* -- Add price slice confirmation dialog ----------------------------------- *}
                                 {loop type="area" name="list area" backend_context=true}
-
+                                <!-- windows Add -->
                                 {capture name="create_dialog"}
                                     <input type="hidden" name="operation" value="add"/>
                                     <input type="hidden" name="area" value="{$ID}" />
@@ -503,7 +503,7 @@
                                                     <td>{$MAX_WEIGHT}</td>
                                                     <td>{$PRICE}</td>
                                                     <td>
-                                                        <div class="btn-group">
+                                                        <div class="btn-group"> <!-- Actions -->
                                                             {loop type="auth" name="can_change" role="ADMIN" module="dpdclassic" access="UPDATE"}
                                                             <a class="btn btn-default btn-xs" title="{intl l='Edit this price slice'}" href="#price_slice_edit_dialog_{$dialog_id}" data-toggle="modal">
                                                                 <span class="glyphicon glyphicon-edit"></span>
@@ -512,7 +512,7 @@
                                                                 <span class="glyphicon glyphicon-trash"></span>
                                                             </a>
                                                             {/loop}
-                                                        </div>
+                                                        </div><!-- /Actions -->
                                                     </td>
                                                 </tr>
                                             {/loop}

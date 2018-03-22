@@ -4,6 +4,8 @@ namespace DpdClassic\Model\Base;
 
 use \Exception;
 use \PDO;
+use DpdClassic\Model\DpdclassicPriceQuery as ChildDpdclassicPriceQuery;
+use DpdClassic\Model\Map\DpdclassicPriceTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -15,14 +17,8 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 
-use DpdClassic\Model\DpdclassicPriceQuery as ChildDpdclassicPriceQuery;
-use DpdClassic\Model\Map\DpdclassicPriceTableMap;
-use DpdClassic\Model\Thelia\Model\AreaQuery;
-use DpdClassicModel\Thelia\Model\Area as ChildArea;
-
-
 abstract class DpdclassicPrice implements ActiveRecordInterface
-    {
+{
     /**
      * TableMap class name
      */
@@ -62,26 +58,22 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the area field.
+     * The value for the area_id field.
      * @var        int
      */
     protected $area_id;
 
-
     /**
      * The value for the weight field.
-     * @var        double
+     * @var        string
      */
     protected $weight;
 
-
-    protected $price;
-
     /**
-     * @var        Area
+     * The value for the price field.
+     * @var        string
      */
-    protected $aArea;
-
+    protected $price;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -187,6 +179,10 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
     }
 
     /**
+     * Compares this with another <code>DpdclassicPrice</code> instance.  If
+     * <code>obj</code> is an instance of <code>DpdclassicPrice</code>, delegates to
+     * <code>equals(DpdclassicPrice)</code>.  Otherwise, returns <code>false</code>.
+     *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
      */
@@ -367,11 +363,10 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
         return $this->area_id;
     }
 
-
     /**
      * Get the [weight] column value.
      *
-     * @return   double
+     * @return   string
      */
     public function getWeight()
     {
@@ -382,7 +377,7 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
     /**
      * Get the [price] column value.
      *
-     * @return   double
+     * @return   string
      */
     public function getPrice()
     {
@@ -412,7 +407,7 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [area] column.
+     * Set the value of [area_id] column.
      *
      * @param      int $v new value
      * @return   \DpdClassic\Model\DpdclassicPrice The current object (for fluent API support)
@@ -428,25 +423,20 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
             $this->modifiedColumns[DpdclassicPriceTableMap::AREA_ID] = true;
         }
 
-        if ($this->aArea !== null && $this->aArea->getId() !== $v) {
-            $this->aArea = null;
-        }
-
 
         return $this;
     } // setAreaId()
 
-
     /**
      * Set the value of [weight] column.
      *
-     * @param      double $v new value
+     * @param      string $v new value
      * @return   \DpdClassic\Model\DpdclassicPrice The current object (for fluent API support)
      */
     public function setWeight($v)
     {
         if ($v !== null) {
-            $v = (double) $v;
+            $v = (string) $v;
         }
 
         if ($this->weight !== $v) {
@@ -454,25 +444,27 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
             $this->modifiedColumns[DpdclassicPriceTableMap::WEIGHT] = true;
         }
 
+
         return $this;
     } // setWeight()
 
     /**
      * Set the value of [price] column.
      *
-     * @param      double $v new value
+     * @param      string $v new value
      * @return   \DpdClassic\Model\DpdclassicPrice The current object (for fluent API support)
      */
     public function setPrice($v)
     {
         if ($v !== null) {
-            $v = (double) $v;
+            $v = (string) $v;
         }
 
         if ($this->price !== $v) {
             $this->price = $v;
             $this->modifiedColumns[DpdclassicPriceTableMap::PRICE] = true;
         }
+
 
         return $this;
     } // setPrice()
@@ -503,7 +495,7 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
      * @param int     $startcol  0-based offset column which indicates which restultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @param string  $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-    One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+                                  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                            TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @return int             next starting column
@@ -520,11 +512,11 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : DpdclassicPriceTableMap::translateFieldName('AreaId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->area_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : DpdclassicPriceTableMap::translateFieldName('Weight', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->weight = (null !== $col) ? (double) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : DpdclassicPriceTableMap::translateFieldName('Weight', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->weight = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : DpdclassicPriceTableMap::translateFieldName('Price', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->price = (null !== $col) ? (double) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : DpdclassicPriceTableMap::translateFieldName('Price', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->price = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -533,7 +525,7 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = DpdclassicPriceTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = DpdclassicPriceTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \DpdClassic\Model\DpdclassicPrice object", 0, $e);
@@ -555,9 +547,6 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aArea !== null && $this->area_id !== $this->aArea->getId()) {
-            $this->aArea = null;
-        }
     } // ensureConsistency
 
     /**
@@ -597,7 +586,6 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aArea = null;
         } // if (deep)
     }
 
@@ -709,18 +697,6 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aArea !== null) {
-                if ($this->aArea->isModified() || $this->aArea->isNew()) {
-                    $affectedRows += $this->aArea->save($con);
-                }
-                $this->setArea($this->aArea);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -757,18 +733,16 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
             throw new PropelException('Cannot insert a value for auto-increment primary key (' . DpdclassicPriceTableMap::ID . ')');
         }
 
-        // check the columns in natural order for more readable SQL queries
+         // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(DpdclassicPriceTableMap::ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
         if ($this->isColumnModified(DpdclassicPriceTableMap::AREA_ID)) {
             $modifiedColumns[':p' . $index++]  = 'AREA_ID';
         }
-
         if ($this->isColumnModified(DpdclassicPriceTableMap::WEIGHT)) {
             $modifiedColumns[':p' . $index++]  = 'WEIGHT';
         }
-
         if ($this->isColumnModified(DpdclassicPriceTableMap::PRICE)) {
             $modifiedColumns[':p' . $index++]  = 'PRICE';
         }
@@ -886,11 +860,10 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
         if (isset($alreadyDumpedObjects['DpdclassicPrice'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
@@ -908,11 +881,6 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
-        if ($includeForeignObjects) {
-            if (null !== $this->aArea) {
-                $result['Area'] = $this->aArea->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-        }
 
         return $result;
     }
@@ -1096,57 +1064,6 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildArea object.
-     *
-     * @param                  ChildArea $v
-     * @return                 \DpdClassic\Model\DpdclassicPrice The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setArea(ChildArea $v = null)
-    {
-        if ($v === null) {
-            $this->setArea(NULL);
-        } else {
-            $this->setArea($v->getId());
-        }
-
-        $this->aArea = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildArea object, it will not be re-added.
-        if ($v !== null) {
-            $v->addDpdclassicPrice($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildArea object
-     *
-     * @param      ConnectionInterface $con Optional Connection object.
-     * @return                 ChildArea The associated ChildArea object.
-     * @throws PropelException
-     */
-    public function getArea(ConnectionInterface $con = null)
-    {
-        if ($this->aArea === null && ($this->area !== null)) {
-            $this->aArea = AreaQuery::create()->findPk($this->area, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aArea->addDpdclassicPrices($this);
-             */
-        }
-
-        return $this->aArea;
-    }
-
-    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
@@ -1176,7 +1093,6 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aArea = null;
     }
 
     /**
@@ -1307,4 +1223,4 @@ abstract class DpdclassicPrice implements ActiveRecordInterface
         throw new BadMethodCallException(sprintf('Call to undefined method: %s.', $name));
     }
 
-    }
+}

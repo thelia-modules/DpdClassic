@@ -4,8 +4,12 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="dpdclassic.slice" path="/admin/module/DpdClassic/slice" methods="post">
-        <default key="_controller">DpdClassic:Slice:saveslice</default>
+    <route id="dpdclassic.save.price" path="/admin/module/DpdClassic/slice" methods="post">
+        <default key="_controller">DpdClassic:Slice:saveSlice</default>
+    </route>
+
+    <route id="dpdclassic.delete.price" path="/admin/module/DpdClassic/slice" methods="post">
+        <default key="_controller">DpdClassic:Slice:deleteSlice</default>
     </route>
 
     <route id="dpdclassic.export" path="/admin/module/DpdClassic/export" methods="post">

@@ -2,6 +2,8 @@
 
 namespace DpdClassic\Model\Map;
 
+use DpdClassic\Model\DpdclassicPrice;
+use DpdClassic\Model\DpdclassicPriceQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -11,9 +13,6 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-
-use DpdClassic\Model\DpdclassicPrice;
-use DpdClassic\Model\DpdclassicPriceQuery;
 
 
 /**
@@ -103,10 +102,10 @@ class DpdclassicPriceTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'AreaId',  'Weight', 'Price', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'areaId',  'weight', 'price', ),
-        self::TYPE_COLNAME       => array(DpdclassicPriceTableMap::ID, DpdclassicPriceTableMap::AREA_ID,  DpdclassicPriceTableMap::WEIGHT, DpdclassicPriceTableMap::PRICE, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'AREA_ID', 'WEIGHT',  'PRICE', ),
+        self::TYPE_PHPNAME       => array('Id', 'AreaId', 'Weight', 'Price', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'areaId', 'weight', 'price', ),
+        self::TYPE_COLNAME       => array(DpdclassicPriceTableMap::ID, DpdclassicPriceTableMap::AREA_ID, DpdclassicPriceTableMap::WEIGHT, DpdclassicPriceTableMap::PRICE, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'AREA_ID', 'WEIGHT', 'PRICE', ),
         self::TYPE_FIELDNAME     => array('id', 'area_id', 'weight', 'price', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
@@ -118,11 +117,11 @@ class DpdclassicPriceTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'AreaId' => 1,  'Weight' => 2, 'Price' => 3, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'areaId' => 1,  'weight' => 2, 'price' => 3, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'AreaId' => 1, 'Weight' => 2, 'Price' => 3, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'areaId' => 1, 'weight' => 2, 'price' => 3, ),
         self::TYPE_COLNAME       => array(DpdclassicPriceTableMap::ID => 0, DpdclassicPriceTableMap::AREA_ID => 1, DpdclassicPriceTableMap::WEIGHT => 2, DpdclassicPriceTableMap::PRICE => 3, ),
-        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'AREA_ID' => 2, 'WEIGHT' => 3, 'PRICE' => 3, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'area_id' => 2, 'weight' => 3, 'price' => 3, ),
+        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'AREA_ID' => 1, 'WEIGHT' => 2, 'PRICE' => 3, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'area_id' => 1, 'weight' => 2, 'price' => 3, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
@@ -143,9 +142,9 @@ class DpdclassicPriceTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-        $this->addForeignKey('AREA_ID', 'Area_Id', 'INTEGER', 'area', 'ID', true, null, null);
-        $this->addColumn('WEIGHT', 'Weight', 'FLOAT', false, null, null);
-        $this->addColumn('PRICE', 'Price', 'FLOAT', true, null, null);
+        $this->addColumn('AREA_ID', 'AreaId', 'INTEGER', true, null, null);
+        $this->addColumn('WEIGHT', 'Weight', 'DECIMAL', false, 16, null);
+        $this->addColumn('PRICE', 'Price', 'DECIMAL', true, 16, null);
     } // initialize()
 
     /**
@@ -153,7 +152,6 @@ class DpdclassicPriceTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Area', '\\DpdClassic\\Model\\Thelia\\Model\\Area', RelationMap::MANY_TO_ONE, array('area_id' => 'id', ), 'RESTRICT', 'RESTRICT');
     } // buildRelations()
 
     /**
@@ -192,11 +190,11 @@ class DpdclassicPriceTableMap extends TableMap
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
 
-        return (int) $row[
-        $indexType == TableMap::TYPE_NUM
-            ? 0 + $offset
-            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
-        ];
+            return (int) $row[
+                            $indexType == TableMap::TYPE_NUM
+                            ? 0 + $offset
+                            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+                        ];
     }
 
     /**
@@ -221,12 +219,12 @@ class DpdclassicPriceTableMap extends TableMap
      * @param array  $row       row returned by DataFetcher->fetch().
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-    One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
      *         rethrown wrapped into a PropelException.
-     * @return array (SocolissimoPrice object, last column rank)
+     * @return array (DpdclassicPrice object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
@@ -323,10 +321,10 @@ class DpdclassicPriceTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(DpdclassicPriceTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(DpdclassicPriceTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new DpdclassicPriceTableMap());
-        }
+      $dbMap = Propel::getServiceContainer()->getDatabaseMap(DpdclassicPriceTableMap::DATABASE_NAME);
+      if (!$dbMap->hasTable(DpdclassicPriceTableMap::TABLE_NAME)) {
+        $dbMap->addTableObject(new DpdclassicPriceTableMap());
+      }
     }
 
     /**
@@ -340,8 +338,8 @@ class DpdclassicPriceTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *         rethrown wrapped into a PropelException.
      */
-    public static function doDelete($values, ConnectionInterface $con = null)
-    {
+     public static function doDelete($values, ConnectionInterface $con = null)
+     {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(DpdclassicPriceTableMap::DATABASE_NAME);
         }
@@ -397,7 +395,7 @@ class DpdclassicPriceTableMap extends TableMap
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from SocolissimoPrice object
+            $criteria = $criteria->buildCriteria(); // build Criteria from DpdclassicPrice object
         }
 
         if ($criteria->containsKey(DpdclassicPriceTableMap::ID) && $criteria->keyContainsValue(DpdclassicPriceTableMap::ID) ) {

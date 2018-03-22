@@ -32,56 +32,37 @@ class SliceController extends BaseAdminController
 
         try {
             $requestData = $this->getRequest()->request;
-
-            if (0 !== $id = intval($requestData->get('id', 0))) {
+            if (0 !== $id = intval($requestData->get('id', 0)))
+                {
                 $slice = DpdclassicPriceQuery::create()->findPk($id);
-            } else {
-                $slice = new DpdclassicPrice();
-            }
+                }
+                else
+                    {
+                    $slice = new DpdclassicPrice();
+                    }
 
-
-            if (0 !== $areaId = intval($requestData->get('area', 0))) {
+            if (0 !== $areaId = intval($requestData->get('area', 0)))
+                {
                 $slice->setAreaId($areaId);
-            } else {
-                $messages[] = $this->getTranslator()->trans(
+                }
+                else
+                    {
+                    $messages[] = $this->getTranslator()->trans(
                     'The area is not valid',
                     [],
                     DpdClassic::DOMAIN_NAME
-                );
-            }
-
-            $requestPrice = $requestData->get('price', null);
-            $requestWeight = $requestData->get('weight', null);
-
-            if (empty($requestPrice) && empty($requestWeight)) {
-                $messages[] = $this->getTranslator()->trans(
-                    'You must specify at least a price max or a weight max value.',
-                    [],
-                    DpdClassic::DOMAIN_NAME
-                );
-            } else {
-                if (!empty($requestPrice)) {
-                    $price = $this->getFloatVal($requestPrice);
-                    if (0 < $price) {
-                        $slice->setPrice($price);
-                    } else {
-                        $messages[] = $this->getTranslator()->trans(
-                            'The price value is not valid',
-                            [],
-                            DpdClassic::DOMAIN_NAME
-                        );
+                    );
                     }
-                } else {
-                    $slice->setPrice(null);
-                }
 
-                if (!empty($requestWeight)) {
-                    $weight = $this->getFloatVal($requestWeight);
+            $requestWeight= $requestData->get('weight', null);
+
+                  if (!empty($requestWeight)) {
+                    $weight= $this->getFloatVal($requestWeight);
                     if (0 < $weight) {
                         $slice->setWeight($weight);
                     } else {
                         $messages[] = $this->getTranslator()->trans(
-                            'The weight value is not valid',
+                            'The weight max value is not valid',
                             [],
                             DpdClassic::DOMAIN_NAME
                         );
@@ -89,9 +70,6 @@ class SliceController extends BaseAdminController
                 } else {
                     $slice->setWeight(null);
                 }
-            }
-
-
 
             $price = $this->getFloatVal($requestData->get('price', 0));
             if (0 <= $price) {
@@ -185,7 +163,6 @@ class SliceController extends BaseAdminController
             $responseData['message'] = $e->getMessage();
         }
 
-        //return $this->jsonResponse(json_encode($responseData));
 
         return $this->generateRedirectFromRoute(
             "admin.module.configure",

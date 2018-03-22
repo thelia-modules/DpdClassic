@@ -4,18 +4,14 @@ namespace DpdClassic\Model\Base;
 
 use \Exception;
 use \PDO;
-use Propel\Runtime\Propel;
-use Propel\Runtime\ActiveQuery\Criteria;
-use Propel\Runtime\ActiveQuery\ModelCriteria;
-use Propel\Runtime\ActiveQuery\ModelJoin;
-use Propel\Runtime\Collection\ObjectCollection;
-use Propel\Runtime\Connection\ConnectionInterface;
-use Propel\Runtime\Exception\PropelException;
-
 use DpdClassic\Model\DpdclassicPrice as ChildDpdclassicPrice;
 use DpdClassic\Model\DpdclassicPriceQuery as ChildDpdclassicPriceQuery;
 use DpdClassic\Model\Map\DpdclassicPriceTableMap;
-use DpdClassic\Model\Thelia\Model\Area;
+use Propel\Runtime\Propel;
+use Propel\Runtime\ActiveQuery\Criteria;
+use Propel\Runtime\ActiveQuery\ModelCriteria;
+use Propel\Runtime\Connection\ConnectionInterface;
+use Propel\Runtime\Exception\PropelException;
 
 /**
  * Base class that represents a query for the 'dpdclassic_price' table.
@@ -36,22 +32,18 @@ use DpdClassic\Model\Thelia\Model\Area;
  * @method     ChildDpdclassicPriceQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildDpdclassicPriceQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildDpdclassicPriceQuery leftJoinArea($relationAlias = null) Adds a LEFT JOIN clause to the query using the Area relation
- * @method     ChildDpdclassicPriceQuery rightJoinArea($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Area relation
- * @method     ChildDpdclassicPriceQuery innerJoinArea($relationAlias = null) Adds a INNER JOIN clause to the query using the Area relation
- *
  * @method     ChildDpdclassicPrice findOne(ConnectionInterface $con = null) Return the first ChildDpdclassicPrice matching the query
  * @method     ChildDpdclassicPrice findOneOrCreate(ConnectionInterface $con = null) Return the first ChildDpdclassicPrice matching the query, or a new ChildDpdclassicPrice object populated from the query conditions when no match is found
  *
  * @method     ChildDpdclassicPrice findOneById(int $id) Return the first ChildDpdclassicPrice filtered by the id column
  * @method     ChildDpdclassicPrice findOneByAreaId(int $area_id) Return the first ChildDpdclassicPrice filtered by the area_id column
- * @method     ChildDpdclassicPrice findOneByWeight(double $weight) Return the first ChildDpdclassicPrice filtered by the weight column
- * @method     ChildDpdclassicPrice findOneByPrice(double $price) Return the first ChildDpdclassicPrice filtered by the price column
+ * @method     ChildDpdclassicPrice findOneByWeight(string $weight) Return the first ChildDpdclassicPrice filtered by the weight column
+ * @method     ChildDpdclassicPrice findOneByPrice(string $price) Return the first ChildDpdclassicPrice filtered by the price column
  *
  * @method     array findById(int $id) Return ChildDpdclassicPrice objects filtered by the id column
- * @method     array findByArea(int $area_id) Return ChildDpdclassicPrice objects filtered by the area_id column
- * @method     array findByWeight(double $weight) Return ChildDpdclassicPrice objects filtered by the weight column
- * @method     array findByPrice(double $price) Return ChildDpdclassicPrice objects filtered by the price column
+ * @method     array findByAreaId(int $area_id) Return ChildDpdclassicPrice objects filtered by the area_id column
+ * @method     array findByWeight(string $weight) Return ChildDpdclassicPrice objects filtered by the weight column
+ * @method     array findByPrice(string $price) Return ChildDpdclassicPrice objects filtered by the price column
  *
  */
 abstract class DpdclassicPriceQuery extends ModelCriteria
@@ -70,7 +62,7 @@ abstract class DpdclassicPriceQuery extends ModelCriteria
     }
 
     /**
-     * Returns a new ChildDpdclassicoPriceQuery object.
+     * Returns a new ChildDpdclassicPriceQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
@@ -121,8 +113,8 @@ abstract class DpdclassicPriceQuery extends ModelCriteria
         }
         $this->basePreSelect($con);
         if ($this->formatter || $this->modelAlias || $this->with || $this->select
-            || $this->selectColumns || $this->asColumns || $this->selectModifiers
-            || $this->map || $this->having || $this->joins) {
+         || $this->selectColumns || $this->asColumns || $this->selectModifiers
+         || $this->map || $this->having || $this->joins) {
             return $this->findPkComplex($key, $con);
         } else {
             return $this->findPkSimple($key, $con);
@@ -140,7 +132,7 @@ abstract class DpdclassicPriceQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql ="SELECT 'ID', 'AREA_ID', 'WEIGHT', 'PRICE' FROM 'dpdclassic_price' WHERE 'ID = :p0'";
+        $sql = 'SELECT ID, AREA_ID, WEIGHT, PRICE FROM dpdclassic_price WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -151,7 +143,7 @@ abstract class DpdclassicPriceQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            $obj = new ChildDpdclassiPrice();
+            $obj = new ChildDpdclassicPrice();
             $obj->hydrate($row);
             DpdclassicPriceTableMap::addInstanceToPool($obj, (string) $key);
         }
@@ -275,14 +267,12 @@ abstract class DpdclassicPriceQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByAreaId(1234); // WHERE area = 1234
-     * $query->filterByAreaId(array(12, 34)); // WHERE area IN (12, 34)
-     * $query->filterByAreaID(array('min' => 12)); // WHERE area > 12
+     * $query->filterByAreaId(1234); // WHERE area_id = 1234
+     * $query->filterByAreaId(array(12, 34)); // WHERE area_id IN (12, 34)
+     * $query->filterByAreaId(array('min' => 12)); // WHERE area_id > 12
      * </code>
      *
-     * @see       filterByArea()
-     *
-     * @param     mixed $areaid The value to use as filter.
+     * @param     mixed $areaId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -294,11 +284,11 @@ abstract class DpdclassicPriceQuery extends ModelCriteria
     {
         if (is_array($areaId)) {
             $useMinMax = false;
-            if (isset($area['min'])) {
+            if (isset($areaId['min'])) {
                 $this->addUsingAlias(DpdclassicPriceTableMap::AREA_ID, $areaId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($area['max'])) {
+            if (isset($areaId['max'])) {
                 $this->addUsingAlias(DpdclassicPriceTableMap::AREA_ID, $areaId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
@@ -314,13 +304,13 @@ abstract class DpdclassicPriceQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the weight_max column
+     * Filter the query on the weight column
      *
      * Example usage:
      * <code>
-     * $query->filterByWeightMax(1234); // WHERE weight_max = 1234
-     * $query->filterByWeightMax(array(12, 34)); // WHERE weight_max IN (12, 34)
-     * $query->filterByWeightMax(array('min' => 12)); // WHERE weight_max > 12
+     * $query->filterByWeight(1234); // WHERE weight = 1234
+     * $query->filterByWeight(array(12, 34)); // WHERE weight IN (12, 34)
+     * $query->filterByWeight(array('min' => 12)); // WHERE weight > 12
      * </code>
      *
      * @param     mixed $weight The value to use as filter.
@@ -396,81 +386,6 @@ abstract class DpdclassicPriceQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \DpdClassic\Model\Thelia\Model\Area object
-     *
-     * @param \DpdClassic\Model\Thelia\Model\Area|ObjectCollection $area The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildDpdclassicPriceQuery The current query, for fluid interface
-     */
-    public function filterByArea($area, $comparison = null)
-    {
-        if ($area instanceof \DpdClassic\Model\Thelia\Model\Area) {
-            return $this
-                ->addUsingAlias(DpdclassicPriceTableMap::AREA, $area->getId(), $comparison);
-        } elseif ($area instanceof ObjectCollection) {
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-
-            return $this
-                ->addUsingAlias(DpdclassicPriceTableMap::AREA, $area->toKeyValue('PrimaryKey', 'Id'), $comparison);
-        } else {
-            throw new PropelException('filterByArea() only accepts arguments of type \DpdClassic\Model\Thelia\Model\Area or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Area relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return ChildDpdclassicPriceQuery The current query, for fluid interface
-     */
-    public function joinArea($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Area');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Area');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Area relation Area object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return   \DpdClassic\Model\Thelia\Model\AreaQuery A secondary query class using the current class as primary query
-     */
-    public function useAreaQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinArea($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Area', '\DpdClassic\Model\Thelia\Model\AreaQuery');
-    }
-
-    /**
      * Exclude object from result
      *
      * @param   ChildDpdclassicPrice $dpdclassicPrice Object to remove from the list of results
@@ -529,8 +444,8 @@ abstract class DpdclassicPriceQuery extends ModelCriteria
      * @throws PropelException Any exceptions caught during processing will be
      *         rethrown wrapped into a PropelException.
      */
-    public function delete(ConnectionInterface $con = null)
-    {
+     public function delete(ConnectionInterface $con = null)
+     {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(DpdclassicPriceTableMap::DATABASE_NAME);
         }
@@ -548,7 +463,7 @@ abstract class DpdclassicPriceQuery extends ModelCriteria
             $con->beginTransaction();
 
 
-            DpdclassicPriceTableMap::removeInstanceFromPool($criteria);
+        DpdclassicPriceTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
             DpdclassicPriceTableMap::clearRelatedInstancePool();

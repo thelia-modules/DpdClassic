@@ -23,13 +23,14 @@
 
 namespace DpdClassic\Loop;
 
-use DpdClassic\DpdClassic;
-use Thelia\Core\Template\Element\ArraySearchLoopInterface;
+use DpdClassic\Model\DpdclassicPrice as DpdclassicPriceModel;
+use Thelia\Core\Template\Element\PropelSearchLoopInterface;
 use Thelia\Core\Template\Element\BaseLoop;
 use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
 use Thelia\Core\Template\Loop\Argument\ArgumentCollection;
 use Thelia\Core\Template\Loop\Argument\Argument;
+use DpdClassic\Model\DpdclassicPriceQuery;
 
 /**
  * Class DpdClassicPrice
@@ -38,11 +39,8 @@ use Thelia\Core\Template\Loop\Argument\Argument;
  * @original_author Etienne Roudeix <eroudeix@openstudio.fr>
  * @contributor Etienne Perriere <eperriere@openstudio.fr>
  */
-class DpdClassicPrice extends BaseLoop implements ArraySearchLoopInterface
+class DpdClassicPrice extends BaseLoop implements PropelSearchLoopInterface //ArraySearchLoopInterface
 {
-    /* set countable to false since we need to preserve keys */
-    protected $countable = false;
-
     /**
      * @return ArgumentCollection
      */
@@ -53,32 +51,29 @@ class DpdClassicPrice extends BaseLoop implements ArraySearchLoopInterface
         );
     }
 
-    public function buildArray()
+    public function buildModelCriteria()
     {
         $area = $this->getArea();
 
-        $prices = DpdClassic::getPrices();
-
-        if (!isset($prices[$area]) || !isset($prices[$area]["slices"])) {
-            return array();
-        }
-
-        $areaPrices = $prices[$area]["slices"];
-        ksort($areaPrices);
+        $areaPrices = DpdclassicPriceQuery::create()
+            ->filterByAreaId($area)
+            ->orderByWeight();
 
         return $areaPrices;
     }
 
     public function parseResults(LoopResult $loopResult)
     {
-        foreach ($loopResult->getResultDataCollection() as $maxWeight => $price) {
+        /** @var DpdclassicPriceModel $price */
+        foreach ($loopResult->getResultDataCollection() as $price) {
             $loopResultRow = new LoopResultRow();
-            $loopResultRow->set("MAX_WEIGHT", $maxWeight)
-                ->set("PRICE", $price);
+            $loopResultRow
+                ->set("SLICE_ID", $price->getId())
+                ->set("MAX_WEIGHT", $price->getWeight())
+                ->set("PRICE", $price->getPrice());
 
             $loopResult->addRow($loopResultRow);
         }
-
         return $loopResult;
     }
 }
