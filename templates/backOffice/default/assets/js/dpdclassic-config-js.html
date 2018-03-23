@@ -2,7 +2,17 @@
 <script src='{$asset_url}'></script>
 {/javascripts}
 
+{javascripts file='assets/js/libs/underscore-min.js'}
+<script src="{$asset_url}"></script>
+{/javascripts}
+
+
 <script>
+    var config = {
+        'urlAdd': '{url path="/admin/module/DpdClassic/slice/save"}',
+        'urlDelete': '{url path="/admin/module/DpdClassic/slice/delete"}',
+        'urlSave': '{url path="/admin/module/DpdClassic/slice/save"}'
+    };
     $(document).ready(function() {
         $(".freeshipping-activation-dpdclassic").bootstrapSwitch();
 
@@ -73,6 +83,16 @@
                 });
             }
         });
+        var getSliceData = function getSliceData($slice) {
+            var data = {
+                id: $slice.data("id"),
+                area: $slice.data("area"),
+                price: $slice.find(".js-slice-price").first().val(),
+                weight: $slice.find(".js-slice-weight").first().val()
+            };
+
+            return data;
+        };
 
         {if ! empty($current_tab)}
             $('.nav-tabs a[href="#{$current_tab}"]').trigger("click");

@@ -458,7 +458,7 @@
                                                 {* -- Edit price slice confirmation dialog ----------------------------------- *}
 
                                                 {capture name="edit_dialog"}
-                                                    <input type="hidden" name="operation" value="add"/>
+                                                    <input type="hidden" name="operation" value="UPDATE"/>
                                                     <input type="hidden" name="area" value="{$ID}"/>
                                                     <input type="hidden" name="weight" value="{$MAX_WEIGHT}"/>
                                                     <label for="price_edit_{$ID}_{$MAX_WEIGHT}">{intl l='Price (%sym)' sym=$currencySymbol}</label>
@@ -473,7 +473,7 @@
                                                     dialog_title = {intl l='Edit a price slice'}
                                                     dialog_message = {$smarty.capture.edit_dialog nofilter}
 
-                                                    form_action= {url path="/admin/module/DpdClassic/slice"}
+                                                    form_action= {url path="/admin/module/DpdClassic/saveslice"}
                                                     dialog_ok_label     = {intl l="Edit"}
                                                     dialog_cancel_label = {intl l="Cancel"}
                                                 }
@@ -481,7 +481,7 @@
                                                 {* -- Delete price slice confirmation dialog ----------------------------------- *}
 
                                                  {capture name="delete_dialog"}
-                                                    <input type="hidden" name="operation" value="delete"/>
+                                                    <input type="hidden" name="operation" value="DELETE"/>
                                                     <input type="hidden" name="area" value="{$ID}"/>
                                                     <input type="hidden" name="weight" value="{$MAX_WEIGHT}"/>
                                                     {intl l="Do you really want to delete this slice ?"}
@@ -494,7 +494,7 @@
                                                     dialog_title = {intl l="Delete a price slice"}
                                                     dialog_message  = {$smarty.capture.delete_dialog nofilter}
 
-                                                    form_action = {url path="/admin/module/DpdClassic/slice"}
+                                                    form_action = {url path="/admin/module/DpdClassic/deleteslice"}
                                                     dialog_ok_label     = {intl l="Delete"}
                                                     dialog_cancel_label = {intl l="Cancel"}
                                                 }
@@ -503,16 +503,18 @@
                                                     <td>{$MAX_WEIGHT}</td>
                                                     <td>{$PRICE}</td>
                                                     <td>
-                                                        <div class="btn-group"> <!-- Actions -->
+                                                        <div class="btn-group">
                                                             {loop type="auth" name="can_change" role="ADMIN" module="dpdclassic" access="UPDATE"}
                                                             <a class="btn btn-default btn-xs" title="{intl l='Edit this price slice'}" href="#price_slice_edit_dialog_{$dialog_id}" data-toggle="modal">
                                                                 <span class="glyphicon glyphicon-edit"></span>
                                                             </a>
+                                                            {/loop}
+                                                            {loop type="auth" name="can_change" role="ADMIN" module="dpdclassic" access="DELETE"}
                                                             <a class="btn btn-default btn-xs" title="{intl l='Delete this price slice'}" href="#price_slice_delete_dialog_{$ID}_{$MAX_WEIGHT|replace:'.':'-'}" data-toggle="modal">
                                                                 <span class="glyphicon glyphicon-trash"></span>
                                                             </a>
                                                             {/loop}
-                                                        </div><!-- /Actions -->
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             {/loop}

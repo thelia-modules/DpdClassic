@@ -9,8 +9,67 @@ use DpdClassic\DpdClassic;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 
+
+
 class SliceController extends BaseAdminController
 {
+    /* Float value */
+    protected function getFloatVal($val, $default = -1)
+    {
+        if (preg_match("#^([0-9\.,]+)$#", $val, $match)) {
+            $val = $match[0];
+            if (strstr($val, ",")) {
+                $val = str_replace(".", "", $val);
+                $val = str_replace(",", ".", $val);
+            }
+            $val = floatval($val);
+
+            return $val;
+        }
+
+        return $default;
+    }
+    /* Delete Action */
+
+    public function deleteSliceAction()
+    {
+        $response = $this->checkAuth([], ['DpdClassic'], AccessManager::DELETE);
+
+        if (null !== $response) {
+            return $response;
+        }
+
+        $this->checkXmlHttpRequest();
+
+        $responseData = [
+            "success" => false,
+            "message" => '',
+            "slice" => null
+        ];
+
+        $response = null;
+
+        try {
+            $requestData = $this->getRequest()->request;
+
+            if (0 !== $id = intval($requestData->get('id', 0))) {
+                $slice =DpdclassicPriceQuery::create()->findPk($id);
+                $slice->delete();
+                $responseData['success'] = true;
+            } else {
+                $responseData['message'] = $this->getTranslator()->trans(
+                    'The slice has not been deleted',
+                    [],
+                    DpdClassic::DOMAIN_NAME
+                );
+            }
+        } catch (\Exception $e) {
+            $responseData['message'] = $e->getMessage();
+        }
+
+        return $this->jsonResponse(json_encode($responseData));
+    }
+    /* Save Action */
     public function saveSliceAction()
     {
         $response = $this->checkAuth([], ['dpdclassic'], AccessManager::UPDATE);
@@ -111,66 +170,5 @@ class SliceController extends BaseAdminController
             ]);
     }
 
-    protected function getFloatVal($val, $default = -1)
-    {
-        if (preg_match("#^([0-9\.,]+)$#", $val, $match)) {
-            $val = $match[0];
-            if (strstr($val, ",")) {
-                $val = str_replace(".", "", $val);
-                $val = str_replace(",", ".", $val);
-            }
-            $val = floatval($val);
 
-            return $val;
-        }
-
-        return $default;
-    }
-
-    public function deleteSliceAction()
-    {
-        $response = $this->checkAuth([], ['dpdclassic'], AccessManager::DELETE);
-
-        if (null !== $response) {
-            return $response;
-        }
-
-        $this->checkXmlHttpRequest();
-
-        $responseData = [
-            "success" => false,
-            "message" => '',
-            "slice" => null
-        ];
-
-        $response = null;
-
-        try {
-            $requestData = $this->getRequest()->request;
-
-            if (0 !== $id = intval($requestData->get('id', 0))) {
-                $slice = DpdclassicPriceQuery::create()->findPk($id);
-                $slice->delete();
-                $responseData['success'] = true;
-            } else {
-                $responseData['message'] = $this->getTranslator()->trans(
-                    'The slice has not been deleted',
-                    [],
-                    DpdClassic::DOMAIN_NAME
-                );
-            }
-        } catch (\Exception $e) {
-            $responseData['message'] = $e->getMessage();
-        }
-
-
-        return $this->generateRedirectFromRoute(
-            "admin.module.configure",
-            [],
-            [
-                'module_code'=>"DpdClassic",
-                'current_tab'=>"price_slices_tab",
-                '_controller' => 'Thelia\\Controller\\Admin\\ModuleController::configureAction'
-            ]);
-    }
 }

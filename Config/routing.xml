@@ -4,11 +4,11 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="dpdclassic.save.price" path="/admin/module/DpdClassic/slice" methods="post">
+    <route id="dpdclassic.saveslice" path="/admin/module/DpdClassic/saveslice" methods="post">
         <default key="_controller">DpdClassic:Slice:saveSlice</default>
     </route>
 
-    <route id="dpdclassic.delete.price" path="/admin/module/DpdClassic/slice" methods="post">
+    <route id="dpdclassic.deleteslice" path="/admin/module/DpdClassic/deleteslice" methods="post">
         <default key="_controller">DpdClassic:Slice:deleteSlice</default>
     </route>
 
