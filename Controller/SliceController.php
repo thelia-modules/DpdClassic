@@ -9,28 +9,8 @@ use DpdClassic\DpdClassic;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 
-
-
 class SliceController extends BaseAdminController
 {
-    /* Float value */
-    protected function getFloatVal($val, $default = -1)
-    {
-        if (preg_match("#^([0-9\.,]+)$#", $val, $match)) {
-            $val = $match[0];
-            if (strstr($val, ",")) {
-                $val = str_replace(".", "", $val);
-                $val = str_replace(",", ".", $val);
-            }
-            $val = floatval($val);
-
-            return $val;
-        }
-
-        return $default;
-    }
-    /* Delete Action */
-
     public function deleteSliceAction()
     {
         $response = $this->checkAuth([], ['DpdClassic'], AccessManager::DELETE);
@@ -46,14 +26,13 @@ class SliceController extends BaseAdminController
             "message" => '',
             "slice" => null
         ];
-
         $response = null;
 
         try {
             $requestData = $this->getRequest()->request;
 
             if (0 !== $id = intval($requestData->get('id', 0))) {
-                $slice =DpdclassicPriceQuery::create()->findPk($id);
+                $slice = DpdclassicPriceQuery::create()->findPk($id);
                 $slice->delete();
                 $responseData['success'] = true;
             } else {
@@ -68,8 +47,17 @@ class SliceController extends BaseAdminController
         }
 
         return $this->jsonResponse(json_encode($responseData));
+
+        /*return $this->generateRedirectFromRoute(
+            "admin.module.configure",
+            [],
+            [
+                'module_code'=>"DpdClassic",
+                'current_tab'=>"price_slices_tab",
+                '_controller' => 'Thelia\\Controller\\Admin\\ModuleController::configureAction'
+            ]);*/
     }
-    /* Save Action */
+
     public function saveSliceAction()
     {
         $response = $this->checkAuth([], ['dpdclassic'], AccessManager::UPDATE);
@@ -117,7 +105,7 @@ class SliceController extends BaseAdminController
 
                   if (!empty($requestWeight)) {
                     $weight= $this->getFloatVal($requestWeight);
-                    if (0 < $weight) {
+                    if ((0 < $weight) || ( $requestWeight != $weight)) {
                         $slice->setWeight($weight);
                     } else {
                         $messages[] = $this->getTranslator()->trans(
@@ -158,7 +146,6 @@ class SliceController extends BaseAdminController
 
         $responseData['message'] = $messages;
 
-        //return $this->jsonResponse(json_encode($responseData));
 
         return $this->generateRedirectFromRoute(
             "admin.module.configure",
@@ -169,6 +156,19 @@ class SliceController extends BaseAdminController
                 '_controller' => 'Thelia\\Controller\\Admin\\ModuleController::configureAction'
             ]);
     }
+    protected function getFloatVal($val, $default = -1)
+    {
+        if (preg_match("#^([0-9\.,]+)$#", $val, $match)) {
+            $val = $match[0];
+            if (strstr($val, ",")) {
+                $val = str_replace(".", "", $val);
+                $val = str_replace(",", ".", $val);
+            }
+            $val = floatval($val);
 
+            return $val;
+        }
 
+        return $default;
+    }
 }
