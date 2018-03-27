@@ -13,8 +13,8 @@ CREATE TABLE `dpdclassic_price`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `area_id` INTEGER NOT NULL,
-    `weight` DECIMAL(16,3),
-    `price` DECIMAL(16,6) NOT NULL,
+    `weight` DECIMAL(16,2),
+    `price` DECIMAL(16,2) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 

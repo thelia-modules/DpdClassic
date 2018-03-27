@@ -69,6 +69,7 @@ class DpdClassicPrice extends BaseLoop implements PropelSearchLoopInterface //Ar
             $loopResultRow = new LoopResultRow();
             $loopResultRow
                 ->set("SLICE_ID", $price->getId())
+                ->set("AREA_ID", $price->getAreaId())
                 ->set("MAX_WEIGHT", $price->getWeight())
                 ->set("PRICE", $price->getPrice());
 

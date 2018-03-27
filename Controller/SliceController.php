@@ -31,7 +31,7 @@ class SliceController extends BaseAdminController
         try {
             $requestData = $this->getRequest()->request;
 
-            if (0 !== $id = intval($requestData->get('id', 0))) {
+            if (0 !== $id = intval($requestData->get('id'))) {
                 $slice = DpdclassicPriceQuery::create()->findPk($id);
                 $slice->delete();
                 $responseData['success'] = true;
@@ -45,17 +45,14 @@ class SliceController extends BaseAdminController
         } catch (\Exception $e) {
             $responseData['message'] = $e->getMessage();
         }
-
-        return $this->jsonResponse(json_encode($responseData));
-
-        /*return $this->generateRedirectFromRoute(
+        return $this->generateRedirectFromRoute(
             "admin.module.configure",
             [],
             [
                 'module_code'=>"DpdClassic",
                 'current_tab'=>"price_slices_tab",
                 '_controller' => 'Thelia\\Controller\\Admin\\ModuleController::configureAction'
-            ]);*/
+            ]);
     }
 
     public function saveSliceAction()

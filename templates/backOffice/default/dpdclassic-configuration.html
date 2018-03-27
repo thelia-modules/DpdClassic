@@ -459,7 +459,8 @@
 
                                                 {capture name="edit_dialog"}
                                                     <input type="hidden" name="operation" value="UPDATE"/>
-                                                    <input type="hidden" name="area" value="{$ID}"/>
+                                                    <input type="hidden" name="id" value="{$SLICE_ID}"/>
+                                                    <input type="hidden" name="area" value="{$AREA_ID}"/>
                                                     <input type="hidden" name="weight" value="{$MAX_WEIGHT}"/>
                                                     <label for="price_edit_{$ID}_{$MAX_WEIGHT}">{intl l='Price (%sym)' sym=$currencySymbol}</label>
                                                     <input type="text" id="price_edit_{$ID}_{$MAX_WEIGHT}" class="form-control" name="price" value="{$PRICE}" pattern="\d+\.?\d*" required/>
@@ -482,7 +483,8 @@
 
                                                  {capture name="delete_dialog"}
                                                     <input type="hidden" name="operation" value="DELETE"/>
-                                                    <input type="hidden" name="area" value="{$ID}"/>
+                                                    <input type="hidden" name="id" value="{$SLICE_ID}"/>
+                                                    <input type="hidden" name="area" value="{$AREA_ID}"/>
                                                     <input type="hidden" name="weight" value="{$MAX_WEIGHT}"/>
                                                     {intl l="Do you really want to delete this slice ?"}
                                                 {/capture}

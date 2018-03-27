@@ -6,8 +6,8 @@
     <table name="dpdclassic_price" namespace="DpdClassic\Model">
         <column name="id" primaryKey="true" autoIncrement="true" required="true" type="INTEGER" />
         <column name="area_id" required="true" type="INTEGER" />
-        <column name="weight" type="DECIMAL" scale="3" size="16"  />
-        <column name="price" required="true" type="DECIMAL" scale="6" size="16"  />
+        <column name="weight" type="DECIMAL" scale="2" size="16"  />
+        <column name="price" required="true" type="DECIMAL" scale="2" size="16"  />
     </table>
     <external-schema filename="local/config/schema.xml" referenceOnly="true" />
 </database>
