@@ -1,7 +1,7 @@
 <?php
 /*************************************************************************************/
 /*                                                                                   */
-/*      Thelia	                                                                     */
+/*      Thelia                                                                       */
 /*                                                                                   */
 /*      Copyright (c) OpenStudio                                                     */
 /*      email : info@thelia.net                                                      */
@@ -17,18 +17,18 @@
 /*      GNU General Public License for more details.                                 */
 /*                                                                                   */
 /*      You should have received a copy of the GNU General Public License            */
-/*	    along with this program. If not, see <http://www.gnu.org/licenses/>.     */
+/*      along with this program. If not, see <http://www.gnu.org/licenses/>.     */
 /*                                                                                   */
 /*************************************************************************************/
 
 namespace DpdClassic\Controller;
 
-use DpdClassic\Form\ExportExaprintForm;
 use DpdClassic\DpdClassic;
+use DpdClassic\Form\ExportExaprintForm;
 use Thelia\Controller\Admin\BaseAdminController;
-use Thelia\Core\Translation\Translator;
-use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Security\AccessManager;
+use Thelia\Core\Security\Resource\AdminResources;
+use Thelia\Core\Translation\Translator;
 
 /**
  * Class ExportExaprintController
@@ -93,7 +93,8 @@ class ExportExaprintController extends BaseAdminController
             } else {
                 throw new \Exception(
                     Translator::getInstance()->trans(
-                        "Can't write DpdClassic/Config/sender.json. Please change the rights on the file and/or the directory.",
+                        "Can't write DpdClassic/Config/sender.json. 
+                        Please change the rights on the file and/or the directory.",
                         [],
                         DpdClassic::DOMAIN_NAME
                     )

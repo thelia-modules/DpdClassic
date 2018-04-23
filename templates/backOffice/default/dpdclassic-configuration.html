@@ -412,7 +412,7 @@
                             <div id="table-prices-icirelais" {if $isDpdClassicFreeShipping eq 1} style="display:none;" {/if}>
                                 {* -- Add price slice confirmation dialog ----------------------------------- *}
                                 {loop type="area" name="list area" backend_context=true}
-
+                                <!-- windows Add -->
                                 {capture name="create_dialog"}
                                     <input type="hidden" name="operation" value="add"/>
                                     <input type="hidden" name="area" value="{$ID}" />
@@ -429,7 +429,7 @@
                                     dialog_title = {intl l="Create a price slice"}
                                     dialog_body  = {$smarty.capture.create_dialog nofilter}
 
-                                    form_action= {url path='/admin/module/DpdClassic/edit-prices'}
+                                    form_action= {url path='/admin/module/DpdClassic/saveslice'}
 
                                     dialog_ok_label     = {intl l="Create"}
                                     dialog_cancel_label = {intl l="Cancel"}
@@ -458,8 +458,9 @@
                                                 {* -- Edit price slice confirmation dialog ----------------------------------- *}
 
                                                 {capture name="edit_dialog"}
-                                                    <input type="hidden" name="operation" value="add"/>
-                                                    <input type="hidden" name="area" value="{$ID}"/>
+                                                    <input type="hidden" name="operation" value="UPDATE"/>
+                                                    <input type="hidden" name="id" value="{$SLICE_ID}"/>
+                                                    <input type="hidden" name="area" value="{$AREA_ID}"/>
                                                     <input type="hidden" name="weight" value="{$MAX_WEIGHT}"/>
                                                     <label for="price_edit_{$ID}_{$MAX_WEIGHT}">{intl l='Price (%sym)' sym=$currencySymbol}</label>
                                                     <input type="text" id="price_edit_{$ID}_{$MAX_WEIGHT}" class="form-control" name="price" value="{$PRICE}" pattern="\d+\.?\d*" required/>
@@ -473,7 +474,7 @@
                                                     dialog_title = {intl l='Edit a price slice'}
                                                     dialog_message = {$smarty.capture.edit_dialog nofilter}
 
-                                                    form_action= {url path="/admin/module/DpdClassic/edit-prices"}
+                                                    form_action= {url path="/admin/module/DpdClassic/saveslice"}
                                                     dialog_ok_label     = {intl l="Edit"}
                                                     dialog_cancel_label = {intl l="Cancel"}
                                                 }
@@ -481,8 +482,9 @@
                                                 {* -- Delete price slice confirmation dialog ----------------------------------- *}
 
                                                  {capture name="delete_dialog"}
-                                                    <input type="hidden" name="operation" value="delete"/>
-                                                    <input type="hidden" name="area" value="{$ID}"/>
+                                                    <input type="hidden" name="operation" value="DELETE"/>
+                                                    <input type="hidden" name="id" value="{$SLICE_ID}"/>
+                                                    <input type="hidden" name="area" value="{$AREA_ID}"/>
                                                     <input type="hidden" name="weight" value="{$MAX_WEIGHT}"/>
                                                     {intl l="Do you really want to delete this slice ?"}
                                                 {/capture}
@@ -494,7 +496,7 @@
                                                     dialog_title = {intl l="Delete a price slice"}
                                                     dialog_message  = {$smarty.capture.delete_dialog nofilter}
 
-                                                    form_action = {url path="/admin/module/DpdClassic/edit-prices"}
+                                                    form_action = {url path="/admin/module/DpdClassic/deleteslice"}
                                                     dialog_ok_label     = {intl l="Delete"}
                                                     dialog_cancel_label = {intl l="Cancel"}
                                                 }
@@ -508,6 +510,8 @@
                                                             <a class="btn btn-default btn-xs" title="{intl l='Edit this price slice'}" href="#price_slice_edit_dialog_{$dialog_id}" data-toggle="modal">
                                                                 <span class="glyphicon glyphicon-edit"></span>
                                                             </a>
+                                                            {/loop}
+                                                            {loop type="auth" name="can_change" role="ADMIN" module="dpdclassic" access="DELETE"}
                                                             <a class="btn btn-default btn-xs" title="{intl l='Delete this price slice'}" href="#price_slice_delete_dialog_{$ID}_{$MAX_WEIGHT|replace:'.':'-'}" data-toggle="modal">
                                                                 <span class="glyphicon glyphicon-trash"></span>
                                                             </a>

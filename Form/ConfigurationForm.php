@@ -22,7 +22,7 @@ class ConfigurationForm extends BaseForm
      */
     protected function buildForm()
     {
-        if (null === $data = DpdClassic::getConfigValue('default_status')){
+        if (null === $data = DpdClassic::getConfigValue('default_status')) {
             $data = DpdClassic::NO_CHANGE;
         }
 
@@ -34,8 +34,16 @@ class ConfigurationForm extends BaseForm
                     'label' => $this->translator->trans('Change order status to', [], DpdClassic::DOMAIN_NAME),
                     'choices' => [
                         DpdClassic::NO_CHANGE => $this->translator->trans("Do not change", [], DpdClassic::DOMAIN_NAME),
-                        DpdClassic::PROCESS => $this->translator->trans("Set orders status as processing", [], DpdClassic::DOMAIN_NAME),
-                        DpdClassic::SEND => $this->translator->trans("Set orders status as sent", [], DpdClassic::DOMAIN_NAME)
+                        DpdClassic::PROCESS => $this->translator->trans(
+                            "Set orders status as processing",
+                            [],
+                            DpdClassic::DOMAIN_NAME
+                        ),
+                        DpdClassic::SEND => $this->translator->trans(
+                            "Set orders status as sent",
+                            [],
+                            DpdClassic::DOMAIN_NAME
+                        )
                     ],
                     'required' => true,
                     'expanded' => true,

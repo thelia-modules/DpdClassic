@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database defaultIdMethod="native" name="thelia"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:noNamespaceSchemaLocation="../../../../core/vendor/propel/propel/resources/xsd/database.xsd" >
+<database defaultIdMethod="native" name="thelia" namespace="DpdClassic\Model">
+
+    <table name="dpdclassic_price">
+        <column name="id" primaryKey="true" autoIncrement="true" required="true" type="INTEGER" />
+        <column name="area_id" required="true" type="INTEGER" />
+        <column name="weight" type="DECIMAL" scale="2" size="16"  />
+        <column name="price" required="true" type="DECIMAL" scale="2" size="16"  />
+        <foreign-key foreignTable="area" name="fk_dpdclassic_price_area_id" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference foreign="id" local="area_id" />
+        </foreign-key>
+    </table>
 
     <external-schema filename="local/config/schema.xml" referenceOnly="true" />
 </database>

@@ -1,7 +1,7 @@
 <?php
 /*************************************************************************************/
 /*                                                                                   */
-/*      Thelia	                                                                     */
+/*      Thelia                                                                       */
 /*                                                                                   */
 /*      Copyright (c) OpenStudio                                                     */
 /*      email : info@thelia.net                                                      */
@@ -17,7 +17,7 @@
 /*      GNU General Public License for more details.                                 */
 /*                                                                                   */
 /*      You should have received a copy of the GNU General Public License            */
-/*	    along with this program. If not, see <http://www.gnu.org/licenses/>.         */
+/*      along with this program. If not, see <http://www.gnu.org/licenses/>.         */
 /*                                                                                   */
 /*************************************************************************************/
 
@@ -150,7 +150,11 @@ class ExportExaprintForm extends BaseForm
                 'expcode',
                 'text',
                 array(
-                    'label' => Translator::getInstance()->trans('DpdClassic Sender\'s code', [], DpdClassic::DOMAIN_NAME),
+                    'label' => Translator::getInstance()->trans(
+                        'DpdClassic Sender\'s code',
+                        [],
+                        DpdClassic::DOMAIN_NAME
+                    ),
                     'constraints' => array(new NotBlank(), new Regex(['pattern' => "#^\d{8}$#"])),
                     'data' => (isset($values['expcode']) ? $values['expcode'] : ""),
                     'label_attr' => array(

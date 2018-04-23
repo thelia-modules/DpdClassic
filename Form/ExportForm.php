@@ -1,7 +1,7 @@
 <?php
 /*************************************************************************************/
 /*                                                                                   */
-/*      Thelia	                                                                     */
+/*      Thelia                                                                       */
 /*                                                                                   */
 /*      Copyright (c) OpenStudio                                                     */
 /*      email : info@thelia.net                                                      */
@@ -17,17 +17,17 @@
 /*      GNU General Public License for more details.                                 */
 /*                                                                                   */
 /*      You should have received a copy of the GNU General Public License            */
-/*	    along with this program. If not, see <http://www.gnu.org/licenses/>.         */
+/*      along with this program. If not, see <http://www.gnu.org/licenses/>.         */
 /*                                                                                   */
 /*************************************************************************************/
 
 namespace DpdClassic\Form;
 
 use DpdClassic\DpdClassic;
+use Propel\Runtime\ActiveQuery\Criteria;
 use Thelia\Form\BaseForm;
 use Thelia\Core\Translation\Translator;
 use Thelia\Model\OrderQuery;
-use Propel\Runtime\ActiveQuery\Criteria;
 
 /**
  * Class ExportForm
@@ -43,7 +43,7 @@ class ExportForm extends BaseForm
 
     protected function buildForm()
     {
-        if (null === $data = DpdClassic::getConfigValue('default_status')){
+        if (null === $data = DpdClassic::getConfigValue('default_status')) {
             $data = DpdClassic::NO_CHANGE;
         }
 
@@ -61,8 +61,16 @@ class ExportForm extends BaseForm
                     'label' => Translator::getInstance()->trans('Change order status to', [], DpdClassic::DOMAIN_NAME),
                     'choices' => array(
                         DpdClassic::NO_CHANGE => $this->translator->trans("Do not change", [], DpdClassic::DOMAIN_NAME),
-                        DpdClassic::PROCESS => $this->translator->trans("Set orders status as processing", [], DpdClassic::DOMAIN_NAME),
-                        DpdClassic::SEND => $this->translator->trans("Set orders status as sent", [], DpdClassic::DOMAIN_NAME)
+                        DpdClassic::PROCESS => $this->translator->trans(
+                            "Set orders status as processing",
+                            [],
+                            DpdClassic::DOMAIN_NAME
+                        ),
+                        DpdClassic::SEND => $this->translator->trans(
+                            "Set orders status as sent",
+                            [],
+                            DpdClassic::DOMAIN_NAME
+                        )
                     ),
                     'required' => true,
                     'expanded' => true,
