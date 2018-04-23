@@ -32,7 +32,7 @@ class FreeShippingForm extends BaseForm
                 [
                     'data' => boolval($freeShipping),
                     'label' => Translator::getInstance()->trans("Activate free shipping: ", [], DpdClassic::DOMAIN_NAME)
-                ])
-            ;
+                ]
+            );
     }
 }

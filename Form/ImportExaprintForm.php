@@ -23,7 +23,8 @@ class ImportExaprintForm extends BaseForm
     {
         $this->formBuilder
             ->add(
-                'import_file', 'file',
+                'import_file',
+                'file',
                 [
                     'label' => Translator::getInstance()->trans('Select file to import', [], DpdClassic::DOMAIN_NAME),
                     'constraints' => [

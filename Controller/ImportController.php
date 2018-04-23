@@ -41,9 +41,11 @@ class ImportController extends BaseAdminController
             // Check extension
             if (!in_array(strtolower($importedFile->getClientOriginalExtension()), ['csv', 'txt'])) {
                 throw new FormValidationException(
-                    Translator::getInstance()->trans('Bad file format. Plain text or CSV expected.',
-                    [],
-                    DpdClassic::DOMAIN_NAME)
+                    Translator::getInstance()->trans(
+                        'Bad file format. Plain text or CSV expected.',
+                        [],
+                        DpdClassic::DOMAIN_NAME
+                    )
                 );
             }
 
@@ -56,7 +58,6 @@ class ImportController extends BaseAdminController
 
                 // Check if there are enough columns to include order ref
                 if (count($parsedLine) > DpdClassic::ORDER_REF_COLUMN) {
-
                     // Get delivery and order ref
                     $deliveryRef = $parsedLine[DpdClassic::DELIVERY_REF_COLUMN];
                     $orderRef = $parsedLine[DpdClassic::ORDER_REF_COLUMN];
@@ -81,7 +82,12 @@ class ImportController extends BaseAdminController
             );
 
             // Redirect
-            return $this->generateRedirect(URL::getInstance()->absoluteUrl($form->getSuccessUrl(), ['current_tab' => 'import_exaprint']));
+            return $this->generateRedirect(
+                URL::getInstance()->absoluteUrl(
+                    $form->getSuccessUrl(),
+                    ['current_tab' => 'import_exaprint']
+                )
+            );
         } catch (FormValidationException $e) {
             $con->rollback();
 

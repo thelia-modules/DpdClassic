@@ -1,7 +1,7 @@
 <?php
 /*************************************************************************************/
 /*                                                                                   */
-/*      Thelia	                                                                     */
+/*      Thelia                                                                       */
 /*                                                                                   */
 /*      Copyright (c) OpenStudio                                                     */
 /*      email : info@thelia.net                                                      */
@@ -17,28 +17,27 @@
 /*      GNU General Public License for more details.                                 */
 /*                                                                                   */
 /*      You should have received a copy of the GNU General Public License            */
-/*	    along with this program. If not, see <http://www.gnu.org/licenses/>.         */
+/*      along with this program. If not, see <http://www.gnu.org/licenses/>.         */
 /*                                                                                   */
 /*************************************************************************************/
 
 namespace DpdClassic\Controller;
 
-use DpdClassic\Form\ExportForm;
 use DpdClassic\DpdClassic;
+use DpdClassic\Form\ExportForm;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
-use Thelia\Core\Translation\Translator;
 use Thelia\Core\HttpFoundation\Response;
+use Thelia\Core\Security\AccessManager;
+use Thelia\Core\Security\Resource\AdminResources;
+use Thelia\Core\Translation\Translator;
 use Thelia\Log\Tlog;
-use Thelia\Model\AddressQuery;
+use Thelia\Model\CustomerQuery;
 use Thelia\Model\Order;
 use Thelia\Model\OrderAddressQuery;
 use Thelia\Model\OrderQuery;
-use Thelia\Model\CustomerQuery;
-use Thelia\Core\Security\Resource\AdminResources;
-use Thelia\Core\Security\AccessManager;
 use Thelia\Model\OrderStatus;
 use Thelia\Model\OrderStatusQuery;
 
@@ -171,7 +170,6 @@ class ExportController extends BaseAdminController
             $orderRef = str_replace(".", "-", $order->getRef());
 
             if ($vform->get($orderRef)->getData()) {
-
                 // Get if the package is assured, how many packages there are & their weight
                 $assur_package = $vform->get($orderRef . "-assur")->getData();
                 $pkgNumber = $vform->get($orderRef . '-pkgNumber')->getData();
@@ -201,8 +199,7 @@ class ExportController extends BaseAdminController
                     ->findPK($order->getCustomerId());
 
                 // Get cellphone
-                if (null == $cellphone = $address->getCellphone())
-                {
+                if (null == $cellphone = $address->getCellphone()) {
                     $address->getPhone();
                 }
 
@@ -230,7 +227,7 @@ class ExportController extends BaseAdminController
                 $res .= self::harmonise("", 'alphanumeric', 10);
                 $res .= self::harmonise($address->getAddress1(), 'alphanumeric', 35);
                 $res .= self::harmonise("", 'alphanumeric', 10);
-                $res .= self::harmonise("F", 'alphanumeric', 3);                            // Default delivered country code
+                $res .= self::harmonise("F", 'alphanumeric', 3);                // Default delivered country code
                 $res .= self::harmonise($address->getPhone(), 'alphanumeric', 30);          // Delivered phone
                 $res .= self::harmonise("", 'alphanumeric', 15);
                 $res .= self::harmonise($exp_name, 'alphanumeric', 35);                     // Expeditor name
@@ -241,7 +238,7 @@ class ExportController extends BaseAdminController
                 $res .= self::harmonise("", 'alphanumeric', 10);
                 $res .= self::harmonise($exp_address1, 'alphanumeric', 35);
                 $res .= self::harmonise("", 'alphanumeric', 10);
-                $res .= self::harmonise("F", 'alphanumeric', 3);                            // Default expeditor country code
+                $res .= self::harmonise("F", 'alphanumeric', 3);                   // Default expeditor country code
                 $res .= self::harmonise($exp_phone, 'alphanumeric', 30);                    // Expeditor phone
                 $res .= self::harmonise("", 'alphanumeric', 35);                            // Order comment 1
                 $res .= self::harmonise("", 'alphanumeric', 35);                            // Order comment 2

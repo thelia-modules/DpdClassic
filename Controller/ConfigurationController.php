@@ -18,7 +18,13 @@ class ConfigurationController extends BaseAdminController
 {
     public function configureAction()
     {
-        if (null !== $response = $this->checkAuth([AdminResources::MODULE], ['DpdClassic'], [AccessManager::CREATE, AccessManager::UPDATE])) {
+        if (null !== $response =
+                $this->checkAuth(
+                    [AdminResources::MODULE],
+                    ['DpdClassic'],
+                    [AccessManager::CREATE, AccessManager::UPDATE]
+                )
+        ) {
             return $response;
         }
 
@@ -32,15 +38,16 @@ class ConfigurationController extends BaseAdminController
 
             // Save data
             DpdClassic::setConfigValue('default_status', $data["default_status"]);
-
         } catch (FormValidationException $ex) {
             $errorMessage = $this->createStandardFormValidationErrorMessage($ex);
         } catch (\Exception $ex) {
-            $errorMessage = $this->getTranslator()->trans('Sorry, an error occurred: %err', ['%err' => $ex->getMessage()], DpdClassic::DOMAIN_NAME);
+            $errorMessage = $this->getTranslator()->trans(
+                'Sorry, an error occurred: %err',
+                ['%err' => $ex->getMessage()],
+                DpdClassic::DOMAIN_NAME
+            );
         }
-
         if ($errorMessage !== null) {
-
             $this->setupFormErrorContext(
                 Translator::getInstance()->trans(
                     "Error while updating status",
