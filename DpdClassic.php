@@ -12,10 +12,13 @@
 
 namespace DpdClassic;
 
+use DpdClassic\Model\DpdclassicPrice;
+use DpdClassic\Model\DpdclassicPriceQuery;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Thelia\Exception\OrderException;
 use Thelia\Install\Database;
 use Thelia\Model\Country;
+use Thelia\Model\MessageQuery;
 use Thelia\Model\OrderPostage;
 use Thelia\Module\AbstractDeliveryModule;
 use Thelia\Module\Exception\DeliveryException;
@@ -35,18 +38,25 @@ class DpdClassic extends AbstractDeliveryModule
     const PROCESS = 'processing';
     const SEND = 'sent';
 
-    const JSON_PRICE_RESOURCE = "/Config/prices.json";
-
     protected $request;
     protected $dispatcher;
 
-    private static $prices = null;
-
     public function postActivation(ConnectionInterface $con = null)
     {
-        $database = new Database($con->getWrappedConnection());
+        try {
+            DpdclassicPriceQuery::create()->findOne();
+        } catch (\Exception $e) {
+            $database = new Database($con->getWrappedConnection());
+            $database->insertSql(null, [__DIR__ . '/Config/thelia.sql']);
+            $database->insertSql(null, [__DIR__ . '/Config/insert_prices.sql']);
+        }
 
-        $database->insertSql(null, array(__DIR__ . '/Config/thelia.sql'));
+        try {
+            MessageQuery::create()->findOneByName('order_confirmation_dpdclassic');
+        } catch (\Exception $e) {
+            $database = new Database($con->getWrappedConnection());
+            $database->insertSql(null, [__DIR__ . '/Config/insert_message.sql']);
+        }
     }
 
     /**
@@ -63,42 +73,21 @@ class DpdClassic extends AbstractDeliveryModule
     public function isValidDelivery(Country $country)
     {
         $cartWeight = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher())->getWeight();
-
         $areaId = $country->getAreaId();
 
-        $prices = self::getPrices();
+        $slices = DpdclassicPriceQuery::create()
+            ->filterByAreaId($areaId)
+            ->orderByWeight()
+            ->find();
 
-        /* Check if DpdClassic delivers the asked area */
-        if (isset($prices[$areaId]) && isset($prices[$areaId]["slices"])) {
-            $areaPrices = $prices[$areaId]["slices"];
-            ksort($areaPrices);
-
-            /* check this weight is not too much */
-            end($areaPrices);
-
-            $maxWeight = key($areaPrices);
-            if ($cartWeight <= $maxWeight) {
-                return true;
+        /**@var DpdclassicPrice $slice*/
+        foreach ($slices as $slice) {
+            if ($slice->getWeight() < $cartWeight) {
+                continue;
             }
+            return true;
         }
-
         return false;
-    }
-
-    public static function getPrices()
-    {
-        if (null === self::$prices) {
-            if (is_readable(sprintf('%s/%s', __DIR__, self::JSON_PRICE_RESOURCE))) {
-                self::$prices = json_decode(
-                    file_get_contents(sprintf('%s/%s', __DIR__, self::JSON_PRICE_RESOURCE)),
-                    true
-                );
-            } else {
-                self::$prices = null;
-            }
-        }
-
-        return self::$prices;
     }
 
     /**
@@ -111,56 +100,34 @@ class DpdClassic extends AbstractDeliveryModule
      */
     public function getPostage(Country $country)
     {
+        if ('true' === Dpdclassic::getConfigValue('freeshipping')) {
+            return 0;
+        }
         $cartWeight = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher())->getWeight();
+        $areaId = $country->getAreaId();
 
-        $postage = self::getPostageAmount(
-            $country->getAreaId(),
-            $cartWeight
-        );
-
-        return $postage;
-    }
-
-    public static function getPostageAmount($areaId, $weight)
-    {
-        $freeShipping = Dpdclassic::getConfigValue('freeshipping');
-        $postage=0;
-
-        if (!$freeShipping) {
-            $prices = self::getPrices();
-
-            /* check if DpdClassic delivers the asked area */
-            if (!isset($prices[$areaId]) || !isset($prices[$areaId]["slices"])) {
-                throw new DeliveryException(
-                    "DPD Classic delivery unavailable for the chosen delivery country",
-                    OrderException::DELIVERY_MODULE_UNAVAILABLE
-                );
-            }
-
-            $areaPrices = $prices[$areaId]["slices"];
-            ksort($areaPrices);
-
-            /* check this weight is not too much */
-            end($areaPrices);
-            $maxWeight = key($areaPrices);
-            if ($weight > $maxWeight) {
-                throw new DeliveryException(
-                    sprintf("DPD Classic delivery unavailable for this cart weight (%s kg)", $weight),
-                    OrderException::DELIVERY_MODULE_UNAVAILABLE
-                );
-            }
-
-            $postage = current($areaPrices);
-
-            while (prev($areaPrices)) {
-                if ($weight > key($areaPrices)) {
-                    break;
-                }
-
-                $postage = current($areaPrices);
-            }
+        $slices = DpdclassicPriceQuery::create()
+            ->filterByAreaId($areaId)
+            ->orderByWeight()
+            ->find();
+        if (empty($slices)) {
+            throw new DeliveryException(
+                "DPD Classic delivery unavailable for the chosen delivery country",
+                OrderException::DELIVERY_MODULE_UNAVAILABLE
+            );
         }
 
-        return $postage;
+        /**@var DpdclassicPrice $slice */
+        foreach ($slices as $slice) {
+            if ($slice->getWeight() < $cartWeight) {
+                continue;
+            }
+            return $slice->getPrice();
+        }
+
+        throw new DeliveryException(
+            sprintf("DPD Classic delivery unavailable for this cart weight (%s kg)", $cartWeight),
+            OrderException::DELIVERY_MODULE_UNAVAILABLE
+        );
     }
 }
