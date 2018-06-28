@@ -15,7 +15,7 @@
 Add it in your main thelia composer.json file:
 
 ```
-composer require thelia/dpd-classic-module:~1.3
+composer require thelia/dpd-classic-module:~1.3.9
 ```
 
 ## Usage
