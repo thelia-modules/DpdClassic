@@ -31,7 +31,7 @@ class FreeShippingController extends BaseAdminController
             $vform = $this->validateForm($form);
             $data = $vform->get('freeshipping')->getData();
 
-            DpdClassic::setConfigValue('freeshipping', ($data) ? 'true' : 'false');
+            DpdClassic::setConfigValue('freeshipping', ($data) ? true : false);
 
             $response = Response::create('');
         } catch (\Exception $e) {
