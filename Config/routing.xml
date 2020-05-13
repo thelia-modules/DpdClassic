@@ -28,4 +28,7 @@
         <default key="_controller">DpdClassic:Configuration:configure</default>
     </route>
 
+    <route id="dpdclassic.freeshipping_amount" path="/admin/module/DpdClassic/freeshipping_amount" methods="post">
+        <default key="_controller">DpdClassic:FreeShipping:amount</default>
+    </route>
 </routes>

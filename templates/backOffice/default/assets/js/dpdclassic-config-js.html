@@ -22,10 +22,12 @@
             .success(function() {
                 if (is_checked) {
                     $('#config-btn-0').removeClass('disabled');
-                    $('#table-prices-icirelais').hide('slow');
+                    $('#table-prices-dpdclassic').hide('fast');
+                    $('#freeshipping-from-dpdclassic').hide('fast');
                 } else {
                     $('#config-btn-0').addClass('disabled');
-                    $('#table-prices-icirelais').show('slow');
+                    $('#table-prices-dpdclassic').show('fast');
+                    $('#freeshipping-from-dpdclassic').show('fast');
                 }
             })
             .fail(function(jqXHR, textStatus, errorThrown){
@@ -74,8 +76,11 @@
             }
         });
 
+        {$current_tab=$smarty.get.current_tab|default:''}
+
         {if ! empty($current_tab)}
-            $('.nav-tabs a[href="#{$current_tab}"]').trigger("click");
+        $('.nav-tabs a[href="#{$current_tab}"]').trigger("click");
         {/if}
+
     });
 </script>

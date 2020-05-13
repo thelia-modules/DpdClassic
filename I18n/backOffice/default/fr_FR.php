@@ -54,4 +54,6 @@ return array(
     'name' => 'Nom',
     'tel' => 'Téléphone',
     'zipcode' => 'Code postal',
+    'Or activate free shipping from' => 'Ou activer le port gratuit à partir de',
+    'Save' => 'Enregistrer'
 );

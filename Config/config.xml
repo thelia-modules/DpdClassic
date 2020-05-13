@@ -18,6 +18,8 @@
         <form name="freeshipping_form" class="DpdClassic\Form\FreeShippingForm" />
         <form name="import_form" class="DpdClassic\Form\ImportExaprintForm" />
         <form name="config_form" class="DpdClassic\Form\ConfigurationForm" />
+        <form name="freeshipping_amount_form" class="DpdClassic\Form\FreeShippingAmountForm" />
+
     </forms>
 
     <hooks>
