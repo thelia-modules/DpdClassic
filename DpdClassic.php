@@ -108,25 +108,35 @@ class DpdClassic extends AbstractDeliveryModule
      *
      * @return OrderPostage|float             the delivery price
      * @throws DeliveryException if the postage price cannot be calculated.
+     * @throws \Propel\Runtime\Exception\PropelException
      */
     public function getPostage(Country $country)
     {
-        $cartWeight = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher())->getWeight();
+        $cart = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher());
 
         $postage = self::getPostageAmount(
             $country->getAreaId(),
-            $cartWeight
+            $cart->getWeight(),
+            $cart->getTaxedAmount($country)
         );
 
         return $postage;
     }
 
-    public static function getPostageAmount($areaId, $weight)
+    public static function getPostageAmount($areaId, $weight, $cartAmount = 0)
     {
         $freeShipping = Dpdclassic::getConfigValue('freeshipping');
         $postage=0;
 
         if (!$freeShipping) {
+            $freeShippingAmount = (float) self::getFreeShippingAmount();
+
+            //If a min price for freeShipping is define and the amount of cart reach this montant return 0
+            //Be carefull ! Thelia cartAmount is a decimal with 6 in precision ! That's why we must round cart amount
+            if ($freeShippingAmount > 0 && $freeShippingAmount <= round($cartAmount, 2)) {
+                return 0;
+            }
+
             $prices = self::getPrices();
 
             /* check if DpdClassic delivers the asked area */
@@ -162,5 +172,20 @@ class DpdClassic extends AbstractDeliveryModule
         }
 
         return $postage;
+    }
+
+
+    public static function getFreeShippingAmount()
+    {
+        if (!null !== $amount = self::getConfigValue('free_shipping_amount')) {
+            return (float) $amount;
+        }
+
+        return 0;
+    }
+
+    public static function setFreeShippingAmount($amount)
+    {
+        self::setConfigValue('free_shipping_amount', $amount);
     }
 }

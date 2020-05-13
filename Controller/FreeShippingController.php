@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
+use Thelia\Tools\URL;
 
 /**
  * Class FreeShippingController
@@ -25,7 +26,6 @@ class FreeShippingController extends BaseAdminController
         }
 
         $form = new FreeShippingForm($this->getRequest());
-        $response=null;
 
         try {
             $vform = $this->validateForm($form);
@@ -39,5 +39,28 @@ class FreeShippingController extends BaseAdminController
         }
 
         return $response;
+    }
+
+    public function amountAction()
+    {
+        $form = $this->createForm('freeshipping_amount_form');
+
+        try {
+            $vform = $this->validateForm($form);
+            $data = (float) $vform->get('amount')->getData();
+
+            DpdClassic::setFreeShippingAmount($data);
+        } catch (\Exception $e) {
+            $this->setupFormErrorContext(
+                "Setting free shipping amount",
+                $e->getMessage(),
+                $form,
+                $e
+            );
+        }
+
+        return $this->generateRedirect(
+            URL::getInstance()->absoluteUrl('/admin/module/DpdClassic', ['current_tab' => 'prices_slices_tab'])
+        );
     }
 }
