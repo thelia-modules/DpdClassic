@@ -19,7 +19,7 @@
         <form name="import_form" class="DpdClassic\Form\ImportExaprintForm" />
         <form name="config_form" class="DpdClassic\Form\ConfigurationForm" />
         <form name="freeshipping_amount_form" class="DpdClassic\Form\FreeShippingAmountForm" />
-
+        <form name="dpdclassic_api_configuration" class="DpdClassic\Form\ApiConfigurationForm" />
     </forms>
 
     <hooks>
@@ -27,6 +27,8 @@
             <tag name="hook.event_listener" event="module.configuration" type="back" method="onModuleConfig" />
             <tag name="hook.event_listener" event="module.config-js" type="back" method="onModuleConfigJs" />
             <tag name="hook.event_listener" event="order.tab-content" type="back" method="onOrderModuleTab" />
+            <tag name="hook.event_listener" event="main.in-top-menu-items" type="back" method="onMenuItems" />
+            <tag name="hook.event_listener" event="order-edit.bill-top" type="back" method="onOrderBillTop" />
         </hook>
     </hooks>
 
@@ -35,6 +37,10 @@
             <argument type="service" id="thelia.parser" />
             <argument type="service" id="mailer"/>
             <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="dpdclassic.labels.smarty.plugin" class="DpdClassic\Smarty\Plugins\DpdClassicLabelNumber" scope="request">
+            <tag name="thelia.parser.register_plugin" />
         </service>
     </services>
 

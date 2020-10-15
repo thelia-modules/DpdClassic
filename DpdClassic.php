@@ -37,6 +37,29 @@ class DpdClassic extends AbstractDeliveryModule
 
     const JSON_PRICE_RESOURCE = "/Config/prices.json";
 
+    const API_USER_ID = "dpdclassic_userid";
+    const API_PASSWORD = "dpdclassic_password";
+    const API_CENTER_NUMBER = "dpdclassic_center_number";
+    const API_CUSTOMER_NUMBER = "dpdclassic_customer_number";
+    const API_IS_TEST = "dpdclassic_is_test";
+
+    const API_SHIPPER_NAME = "dpdclassic_shipper_name";
+    const API_SHIPPER_ADDRESS1 = "dpdclassic_shipper_address1";
+    const API_SHIPPER_ADDRESS2 = "dpdclassic_shipper_address2";
+    const API_SHIPPER_COUNTRY = "dpdclassic_shipper_country";
+    const API_SHIPPER_CITY = "dpdclassic_shipper_city";
+    const API_SHIPPER_ZIP = "dpdclassic_shipper_zip_code";
+    const API_SHIPPER_CIV = "dpdclassic_shipper_civ";
+    const API_SHIPPER_CONTACT = "dpdclassic_shipper_contact";
+    const API_SHIPPER_PHONE = "dpdclassic_shipper_phone";
+    const API_SHIPPER_FAX = "dpdclassic_shipper_fax";
+    const API_SHIPPER_MAIL = "dpdclassic_shipper_mail";
+
+    const DPD_WSDL_TEST = "http://92.103.148.116/exa-eprintwebservice/eprintwebservice.asmx?WSDL";
+    const DPD_WSDL = "https://e-station.cargonet.software/dpd-eprintwebservice/eprintwebservice.asmx?WSDL";
+
+    const DPD_LABEL_DIR = THELIA_LOCAL_DIR . "DpdClassicLabel";
+
     protected $request;
     protected $dispatcher;
 
@@ -44,9 +67,14 @@ class DpdClassic extends AbstractDeliveryModule
 
     public function postActivation(ConnectionInterface $con = null)
     {
-        $database = new Database($con->getWrappedConnection());
+        $database = new Database($con);
 
-        $database->insertSql(null, array(__DIR__ . '/Config/thelia.sql'));
+        if ("1" !== self::getConfigValue("is_initialized")){
+            $database->insertSql(null, array(__DIR__ . '/Config/message.sql'));
+            $database->insertSql(null, array(__DIR__ . '/Config/thelia.sql'));
+
+            self::setConfigValue("is_initialized", 1);
+        }
     }
 
     /**
@@ -187,5 +215,24 @@ class DpdClassic extends AbstractDeliveryModule
     public static function setFreeShippingAmount($amount)
     {
         self::setConfigValue('free_shipping_amount', $amount);
+    }
+
+    public static function getApiConfig()
+    {
+        $data = [];
+        $data['userId'] = self::getConfigValue(self::API_USER_ID);
+        $data['password'] = self::getConfigValue(self::API_PASSWORD);
+        $data['center_number'] = self::getConfigValue(self::API_CENTER_NUMBER);
+        $data['customer_number'] = self::getConfigValue(self::API_CUSTOMER_NUMBER);
+        $data['isTest'] = (int)self::getConfigValue(self::API_IS_TEST);
+        $data['shipperName'] = self::getConfigValue(self::API_SHIPPER_NAME);
+        $data['shipperAddress1'] = self::getConfigValue(self::API_SHIPPER_ADDRESS1);
+        $data['shipperCountry'] = self::getConfigValue(self::API_SHIPPER_COUNTRY);
+        $data['shipperCity'] = self::getConfigValue(self::API_SHIPPER_CITY);
+        $data['shipperZipCode'] = self::getConfigValue(self::API_SHIPPER_ZIP);
+        $data['shipperPhone'] = self::getConfigValue(self::API_SHIPPER_PHONE);
+        $data['shipperFax'] = self::getConfigValue(self::API_SHIPPER_FAX);
+
+        return $data;
     }
 }

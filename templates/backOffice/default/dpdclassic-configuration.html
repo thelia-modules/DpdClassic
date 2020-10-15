@@ -36,6 +36,10 @@
             {if $smarty.get.current_tab eq "config"}
                 {assign var="tab" value="4"}
             {/if}
+
+            {if $smarty.get.current_tab eq "api_config"}
+                {assign var="tab" value="5"}
+            {/if}
         {/if}
 
         <div class="row">
@@ -47,6 +51,7 @@
                     <li class="{if $tab eq "2"}active{/if}"><a data-toggle="tab" href="#configure_export_exaprint">{intl d='dpdclassic.bo.default' l="Configure sender address"}</a></li>
                     <li class="{if $tab eq "3"}active{/if}"><a data-toggle="tab" href="#prices_slices_tab">{intl d='dpdclassic.bo.default' l="Price slices"}</a></li>
                     <li class="{if $tab eq "4"}active{/if}"><a data-toggle="tab" href="#configuration_tab">{intl d='dpdclassic.bo.default' l="Configuration"}</a></li>
+                    <li class="{if $tab eq "5"}active{/if}"><a data-toggle="tab" href="#api_configuration_tab">{intl d='dpdclassic.bo.default' l="API Configuration"}</a></li>
                 </ul>
                 <br/>
 
@@ -57,6 +62,37 @@
                 {/if}
 
                 <div class="tab-content">
+
+                    <div id="api_configuration_tab" class="tab-pane {if $tab eq "5"}active{/if} form-container">
+                        {form name="dpdclassic_api_configuration"}
+                            <form action="{url path="/admin/module/DpdClassic/api/save-config"}" method="post">
+                                {form_hidden_fields}
+
+                                {if $form_error}
+                                    <div class="alert alert-danger">{$form_error_message}</div>
+                                {/if}
+
+                                <div class="col-md-6">
+                                    {render_form_field field="user_id"}
+                                    {render_form_field field="password"}
+                                    {render_form_field field="center_number"}
+                                    {render_form_field field="customer_number"}
+                                    {render_form_field field="isTest"}
+                                </div>
+
+                                <div class="col-md-6">
+                                    {render_form_field field="shipper_name"}
+                                    {render_form_field field="shipper_address1"}
+                                    {render_form_field field="shipper_country"}
+                                    {render_form_field field="shipper_city"}
+                                    {render_form_field field="shipper_zip_code"}
+                                    {render_form_field field="shipper_phone"}
+                                    {render_form_field field="shipper_fax"}
+                                </div>
+                                <button type="submit" name="save_mode" value="stay" class="form-submit-button btn btn-sm btn-default btn-success">{intl d='dpdclassic.bo.default' l='Save changes'} <span class="glyphicon glyphicon-ok"></span></button>
+                            </form>
+                        {/form}
+                    </div>
 
                     <!-- Configuration tab -->
                     <div id="configuration_tab" class="tab-pane {if $tab eq "4"}active{/if} form-container">

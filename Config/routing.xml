@@ -31,4 +31,32 @@
     <route id="dpdclassic.freeshipping_amount" path="/admin/module/DpdClassic/freeshipping_amount" methods="post">
         <default key="_controller">DpdClassic:FreeShipping:amount</default>
     </route>
+
+    <route id="dpdclassic.save.api.config" path="/admin/module/DpdClassic/api/save-config">
+        <default key="_controller">DpdClassic:Configuration:saveApiConfig</default>
+    </route>
+
+    <route id="dpdclassic.labels" path="/admin/module/DpdClassic/labels">
+        <default key="_controller">DpdClassic:Label:show</default>
+    </route>
+
+    <route id="dpdclassic.save.label" path="/admin/module/DpdClassic/saveLabel">
+        <default key="_controller">DpdClassic:Label:save</default>
+    </route>
+
+    <route id="dpdclassic.download.label" path="/admin/module/DpdClassic/labels-file/{base64EncodedFilename}">
+        <default key="_controller">DpdClassic:Label:download</default>
+    </route>
+
+    <route id="dpdclassic.show.label" path="/admin/module/DpdClassic/getLabel/{orderRef}">
+        <default key="_controller">DpdClassic:Label:getLabel</default>
+    </route>
+
+    <route id="dpdclassic.delete.label" path="/admin/module/DpdClassic/deleteLabel">
+        <default key="_controller">DpdClassic:Label:deleteLabel</default>
+    </route>
+
+    <route id="dpdclassic.generate.label" path="/admin/module/DpdClassic/generateLabel">
+        <default key="_controller">DpdClassic:Label:generateLabel</default>
+    </route>
 </routes>
