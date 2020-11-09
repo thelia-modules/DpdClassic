@@ -20,6 +20,7 @@
         <form name="config_form" class="DpdClassic\Form\ConfigurationForm" />
         <form name="freeshipping_amount_form" class="DpdClassic\Form\FreeShippingAmountForm" />
         <form name="dpdclassic_api_configuration" class="DpdClassic\Form\ApiConfigurationForm" />
+        <form name="dpdclassic.label.generation.form" class="DpdClassic\Form\LabelGenerationForm" />
     </forms>
 
     <hooks>

@@ -32,7 +32,7 @@
                     {intl l='Delete' d='dpdclassic.bo.default'}
                 </a>
                 {if !$labelNbr}
-                    <a class="btn btn-primary pull-right" href={url path="/admin/module/DpdClassic/generateLabel" orderId=$order_id}>
+                    <a class="btn btn-primary pull-right" href=#dpdclassic-label-dialog data-toggle="modal">
                         {intl l='Generate' d='dpdclassic.bo.default'}
                     </a>
                 {/if}
@@ -40,3 +40,29 @@
         {/loop}
     </tr>
 </table>
+
+{form name="dpdclassic.label.generation.form"}
+
+{capture "dpdclassic_label_creation"}
+    {form_hidden_fields}
+
+    {render_form_field field='weight'}
+{/capture}
+
+
+    {include
+    file = "includes/generic-create-dialog.html"
+
+    dialog_id    = "dpdclassic-label-dialog"
+    dialog_title = {intl l="Create label" d='dpdclassic.bo.default'}
+    dialog_body  = {$smarty.capture.dpdclassic_label_creation nofilter}
+
+    dialog_ok_label     = {intl l="Create" d='dpdclassic.bo.default'}
+    dialog_cancel_label = {intl l="Cancel" d='dpdclassic.bo.default'}
+
+    form_action        = {url path="/admin/module/DpdClassic/generateLabel" orderId=$order_id}
+    form_enctype       = {form_enctype}
+    form_error_message = $form_error_message
+    }
+
+{/form}
