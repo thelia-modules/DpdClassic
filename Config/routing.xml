@@ -32,6 +32,7 @@
         <default key="_controller">DpdClassic:FreeShipping:amount</default>
     </route>
 
+
     <route id="dpdclassic.save.api.config" path="/admin/module/DpdClassic/api/save-config">
         <default key="_controller">DpdClassic:Configuration:saveApiConfig</default>
     </route>
@@ -58,5 +59,9 @@
 
     <route id="dpdclassic.generate.label" path="/admin/module/DpdClassic/generateLabel">
         <default key="_controller">DpdClassic:Label:generateLabel</default>
+    </route>
+
+    <route id="dpdclassic.create.label" path="/admin/picking/DpdClassic/createLabel">
+        <default key="_controller">DpdClassic\Controller\LabelController::createLabelAction</default>
     </route>
 </routes>
