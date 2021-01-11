@@ -34,7 +34,6 @@ use Thelia\Core\Security\AccessManager;
  * Class ExportExaprintController
  * @package DpdClassic\Controller
  * @author Thelia <info@thelia.net>
- * @contributor Etienne Perriere <eperriere@openstudio.fr>
  */
 class ExportExaprintController extends BaseAdminController
 {

@@ -33,7 +33,6 @@ use Thelia\Core\Security\AccessManager;
  * Class EditPricesController
  * @package DpdClassic\Controller
  * @author Thelia <info@thelia.net>
- * @contributor Etienne Perriere <eperriere@openstudio.fr>
  */
 class EditPricesController extends BaseAdminController
 {
