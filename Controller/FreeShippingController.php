@@ -15,7 +15,6 @@ use Thelia\Tools\URL;
  * Class FreeShippingController
  * @package DpdClassic\Controller
  * @author Thelia <info@thelia.net>
- * @contributor Etienne Perriere <eperriere@openstudio.fr>
  */
 class FreeShippingController extends BaseAdminController
 {

@@ -31,7 +31,6 @@ use DpdClassic\DpdClassic;
  * Class DpdClassicDelivery
  * @package DpdClassic\Loop
  * @author Thelia <info@thelia.net>
- * @contributor Etienne Perriere <eperriere@openstudio.fr>
  */
 class DpdClassicDelivery extends Delivery
 {

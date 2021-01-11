@@ -35,7 +35,6 @@ use Thelia\Core\Translation\Translator;
  * Class CheckRightsLoop
  * @package DpdClassic\Looop
  * @author Thelia <info@thelia.net>
- * @contributor Etienne Perriere <eperriere@openstudio.fr>
  */
 
 class CheckRightsLoop extends BaseLoop implements ArraySearchLoopInterface

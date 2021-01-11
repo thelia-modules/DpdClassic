@@ -37,7 +37,6 @@ use Thelia\Model\MessageQuery;
  * Class SendEMail
  * @package DpdClassic\EventListeners
  * @author Thelia <info@thelia.net>
- * @contributor Etienne Perriere <eperriere@openstudio.fr>
  */
 class SendEMail extends BaseAction implements EventSubscriberInterface
 {

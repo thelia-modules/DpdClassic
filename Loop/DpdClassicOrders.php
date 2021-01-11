@@ -32,7 +32,6 @@ use Thelia\Model\OrderQuery;
  * Class DpdClassicOrders
  * @package DpdClassic\Loop
  * @author Thelia <info@thelia.net>
- * @contributor Etienne Perriere <eperriere@openstudio.fr>
  */
 class DpdClassicOrders extends Order
 {

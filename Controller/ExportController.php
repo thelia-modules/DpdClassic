@@ -46,8 +46,6 @@ use Thelia\Model\OrderStatusQuery;
  * Class ExportController
  * @package DpdClassic\Controller
  * @author Thelia <info@thelia.net>
- * @original_author etienne roudeix <eroudeix@openstudio.fr>
- * @contributor Etienne Perriere <eperriere@openstudio.fr>
  */
 class ExportController extends BaseAdminController
 {
