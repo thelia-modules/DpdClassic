@@ -12,6 +12,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Thelia\Core\Translation\Translator;
 use Thelia\Model\CountryArea;
 use Thelia\Module\Exception\DeliveryException;
+use Thelia\Model\Base\ModuleQuery;
 
 class APIListener implements EventSubscriberInterface
 {
@@ -53,7 +54,7 @@ class APIListener implements EventSubscriberInterface
             foreach ($countryAreas as $countryArea) {
                 $areasArray[] = $countryArea->getAreaId();
             }
-            
+
             if (empty($countryAreas->getFirst())) {
                 throw new DeliveryException(Translator::getInstance()->trans("Your delivery country is not covered by DpdClassic"));
             }
@@ -63,7 +64,7 @@ class APIListener implements EventSubscriberInterface
                 $deliveryModuleOptionEvent->getCart()->getWeight(),
                 $deliveryModuleOptionEvent->getCart()->getTaxedAmount($country)
             );
-            
+
             $postageTax = 0; //TODO
         } catch (\Exception $exception) {
             $isValid = false;
@@ -74,12 +75,16 @@ class APIListener implements EventSubscriberInterface
         $minimumDeliveryDate = ''; // TODO (calculate delivery date from day of order)
         $maximumDeliveryDate = ''; // TODO (calculate delivery date from day of order
 
+        $propelModule = ModuleQuery::create()
+            ->filterById(DpdClassic::getModuleId())
+            ->findOne();
+
         /** @var DeliveryModuleOption $deliveryModuleOption */
         $deliveryModuleOption = ($this->container->get('open_api.model.factory'))->buildModel('DeliveryModuleOption');
         $deliveryModuleOption
-            ->setCode('DpdClassic')
+            ->setCode(DpdClassic::getModuleCode())
             ->setValid($isValid)
-            ->setTitle('Colissimo Home Delivery')
+            ->setTitle($propelModule->getTitle())
             ->setImage('')
             ->setMinimumDeliveryDate($minimumDeliveryDate)
             ->setMaximumDeliveryDate($maximumDeliveryDate)
