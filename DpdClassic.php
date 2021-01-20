@@ -161,6 +161,6 @@ class DpdClassic extends AbstractDeliveryModule
             }
         }
 
-        return $postage;
+        return (float) $postage;
     }
 }
