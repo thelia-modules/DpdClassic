@@ -35,8 +35,6 @@ use Thelia\Core\Template\Loop\Argument\Argument;
  * Class DpdClassicPrice
  * @package DpdClassic\Loop
  * @author Thelia <info@thelia.net>
- * @original_author Etienne Roudeix <eroudeix@openstudio.fr>
- * @contributor Etienne Perriere <eperriere@openstudio.fr>
  */
 class DpdClassicPrice extends BaseLoop implements ArraySearchLoopInterface
 {

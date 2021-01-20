@@ -37,7 +37,6 @@ use Thelia\Model\MessageQuery;
  * Class SendEMail
  * @package DpdClassic\EventListeners
  * @author Thelia <info@thelia.net>
- * @contributor Etienne Perriere <eperriere@openstudio.fr>
  */
 class SendEMail extends BaseAction implements EventSubscriberInterface
 {
@@ -79,7 +78,7 @@ class SendEMail extends BaseAction implements EventSubscriberInterface
                         ->filterByName('order_confirmation_dpdclassic')
                         ->findOne();
 
-                    if (false === $message) {
+                    if (null === $message) {
                         throw new \Exception("Failed to load message 'order_confirmation_dpdclassic'.");
                     }
 

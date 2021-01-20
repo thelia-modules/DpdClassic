@@ -21,25 +21,48 @@
 /*                                                                                   */
 /*************************************************************************************/
 
-namespace DpdClassic\Loop;
+namespace DpdClassic\Form;
 
-use Propel\Runtime\ActiveQuery\Criteria;
-use Thelia\Core\Template\Loop\Order;
 use DpdClassic\DpdClassic;
-use Thelia\Model\OrderQuery;
+use Thelia\Form\BaseForm;
 
-/**
- * Class DpdClassicOrders
- * @package DpdClassic\Loop
- * @author Thelia <info@thelia.net>
- */
-class DpdClassicOrders extends Order
+class FreeShippingAmountForm extends BaseForm
 {
-    public function buildModelCriteria()
+    /**
+     *
+     * in this function you add all the fields you need for your Form.
+     * Form this you have to call add method on $this->formBuilder attribute :
+     *
+     * $this->formBuilder->add("name", "text")
+     *   ->add("email", "email", array(
+     *           "attr" => array(
+     *               "class" => "field"
+     *           ),
+     *           "label" => "email",
+     *           "constraints" => array(
+     *               new \Symfony\Component\Validator\Constraints\NotBlank()
+     *           )
+     *       )
+     *   )
+     *   ->add('age', 'integer');
+     *
+     * @return null
+     */
+    protected function buildForm()
     {
-        return OrderQuery::create()
-            ->filterByDeliveryModuleId(DpdClassic::getModuleId())
-            ->filterByStatusId([DpdClassic::STATUS_PAID, DpdClassic::STATUS_PROCESSING])
-            ->orderByCreatedAt(Criteria::DESC);
+        $this->formBuilder
+            ->add(
+                "amount",
+                "number",
+                [
+                    'data' => (float) DpdClassic::getFreeShippingAmount()
+                ]
+            );
+        ;
+    }
+
+    public function getName()
+    {
+        return "freeshipping_amount_form";
     }
 }

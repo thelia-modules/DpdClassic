@@ -36,7 +36,6 @@ use Thelia\Model\OrderQuery;
  * Class DpdClassicUrlTracking
  * @package DpdClassic\Loop
  * @author Thelia <info@thelia.net>
- * @contributor Etienne Perriere <eperriere@openstudio.fr>
  *
  * @method string getRef
  *
