@@ -25,6 +25,8 @@ namespace DpdClassic\Form;
 
 use DpdClassic\Controller\ExportExaprintController;
 use DpdClassic\DpdClassic;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -37,7 +39,7 @@ use Symfony\Component\Validator\Constraints\Regex;
  */
 class ExportExaprintForm extends BaseForm
 {
-    public function getName()
+    public static function getName()
     {
         return "export_exaprint_form";
     }
@@ -53,7 +55,7 @@ class ExportExaprintForm extends BaseForm
         $this->formBuilder
             ->add(
                 'name',
-                'text',
+                TextType::class,
                 array(
                     'label' => Translator::getInstance()->trans('Sender\'s name', [], DpdClassic::DOMAIN_NAME),
                     'data' => (isset($values['name']) ? $values['name'] : ""),
@@ -65,7 +67,7 @@ class ExportExaprintForm extends BaseForm
             )
             ->add(
                 'addr',
-                'text',
+                TextType::class,
                 array(
                     'label' => Translator::getInstance()->trans('Sender\'s address1', [], DpdClassic::DOMAIN_NAME),
                     'data' => (isset($values['addr']) ? $values['addr'] : ""),
@@ -77,7 +79,7 @@ class ExportExaprintForm extends BaseForm
             )
             ->add(
                 'addr2',
-                'text',
+                TextType::class,
                 array(
                     'label' => Translator::getInstance()->trans('Sender\'s address2', [], DpdClassic::DOMAIN_NAME),
                     'data' => (isset($values['addr2']) ? $values['addr2'] : ""),
@@ -88,7 +90,7 @@ class ExportExaprintForm extends BaseForm
             )
             ->add(
                 'zipcode',
-                'text',
+                TextType::class,
                 array(
                     'label' => Translator::getInstance()->trans('Sender\'s zipcode', [], DpdClassic::DOMAIN_NAME),
                     'data' => (isset($values['zipcode']) ? $values['zipcode'] : ""),
@@ -100,7 +102,7 @@ class ExportExaprintForm extends BaseForm
             )
             ->add(
                 'city',
-                'text',
+                TextType::class,
                 array(
                     'label' => Translator::getInstance()->trans('Sender\'s city', [], DpdClassic::DOMAIN_NAME),
                     'data' => (isset($values['city']) ? $values['city'] : ""),
@@ -112,7 +114,7 @@ class ExportExaprintForm extends BaseForm
             )
             ->add(
                 'tel',
-                'text',
+                TextType::class,
                 array(
                     'label' => Translator::getInstance()->trans('Sender\'s phone', [], DpdClassic::DOMAIN_NAME),
                     'data' => (isset($values['tel']) ? $values['tel'] : ""),
@@ -124,7 +126,7 @@ class ExportExaprintForm extends BaseForm
             )
             ->add(
                 'mobile',
-                'text',
+                TextType::class,
                 array(
                     'label' => Translator::getInstance()->trans('Sender\'s mobile phone', [], DpdClassic::DOMAIN_NAME),
                     'data' => (isset($values['mobile']) ? $values['mobile'] : ""),
@@ -136,7 +138,7 @@ class ExportExaprintForm extends BaseForm
             )
             ->add(
                 'mail',
-                'email',
+                EmailType::class,
                 array(
                     'label' => Translator::getInstance()->trans('Sender\'s email', [], DpdClassic::DOMAIN_NAME),
                     'data' => (isset($values['mail']) ? $values['mail'] : ""),
@@ -148,7 +150,7 @@ class ExportExaprintForm extends BaseForm
             )
             ->add(
                 'expcode',
-                'text',
+                TextType::class,
                 array(
                     'label' => Translator::getInstance()->trans('DpdClassic Sender\'s code', [], DpdClassic::DOMAIN_NAME),
                     'constraints' => array(new NotBlank(), new Regex(['pattern' => "#^\d{8}$#"])),

@@ -3,6 +3,7 @@
 namespace DpdClassic\Controller;
 
 use DpdClassic\DpdClassic;
+use DpdClassic\Form\FreeShippingAmountForm;
 use DpdClassic\Form\FreeShippingForm;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,21 +11,26 @@ use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Tools\URL;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * @Route("/admin/module/DpdClassic", name="DpdClassic")
  * Class FreeShippingController
  * @package DpdClassic\Controller
  * @author Thelia <info@thelia.net>
  */
 class FreeShippingController extends BaseAdminController
 {
+    /**
+     * @Route("/freeshipping", name="_freeshipping", methods="POST")
+     */
     public function changeFreeShippingAction()
     {
         if (null !== $response = $this->checkAuth([AdminResources::MODULE], ["dpdclassic"], AccessManager::UPDATE)) {
             return $response;
         }
 
-        $form = new FreeShippingForm($this->getRequest());
+        $form = $this->createForm(FreeShippingForm::getName());
 
         try {
             $vform = $this->validateForm($form);
@@ -40,9 +46,12 @@ class FreeShippingController extends BaseAdminController
         return $response;
     }
 
+    /**
+     * @Route("/freeshipping_amount", name="_freeshipping_amount", methods="POST")
+     */
     public function amountAction()
     {
-        $form = $this->createForm('freeshipping_amount_form');
+        $form = $this->createForm(FreeShippingAmountForm::getName());
 
         try {
             $vform = $this->validateForm($form);

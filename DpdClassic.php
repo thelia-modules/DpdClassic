@@ -13,6 +13,7 @@
 namespace DpdClassic;
 
 use Propel\Runtime\Connection\ConnectionInterface;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Thelia\Exception\OrderException;
 use Thelia\Install\Database;
 use Thelia\Model\Country;
@@ -42,7 +43,7 @@ class DpdClassic extends AbstractDeliveryModule
 
     private static $prices = null;
 
-    public function postActivation(ConnectionInterface $con = null)
+    public function postActivation(ConnectionInterface $con = null): void
     {
         $database = new Database($con->getWrappedConnection());
 
@@ -187,5 +188,13 @@ class DpdClassic extends AbstractDeliveryModule
     public static function setFreeShippingAmount($amount)
     {
         self::setConfigValue('free_shipping_amount', $amount);
+    }
+
+    public static function configureServices(ServicesConfigurator $servicesConfigurator): void
+    {
+        $servicesConfigurator->load(self::getModuleCode().'\\', __DIR__)
+            ->exclude([THELIA_MODULE_DIR . ucfirst(self::getModuleCode()). "/I18n/*"])
+            ->autowire(true)
+            ->autoconfigure(true);
     }
 }

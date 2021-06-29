@@ -3,6 +3,7 @@
 namespace DpdClassic\Form;
 
 use DpdClassic\DpdClassic;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
 
@@ -13,7 +14,7 @@ use Thelia\Form\BaseForm;
  */
 class FreeShippingForm extends BaseForm
 {
-    public function getName()
+    public static function getName()
     {
         return "freeshipping_form";
     }
@@ -28,7 +29,7 @@ class FreeShippingForm extends BaseForm
         $this->formBuilder
             ->add(
                 "freeshipping",
-                "checkbox",
+                CheckboxType::class,
                 [
                     'data' => (bool) $freeShipping,
                     'label' => Translator::getInstance()->trans("Activate free shipping: ", [], DpdClassic::DOMAIN_NAME)

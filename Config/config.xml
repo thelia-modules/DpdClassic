@@ -30,7 +30,7 @@
         </hook>
     </hooks>
 
-    <services>
+    <!--<services>
         <service id="send.dpdclassic.mail" class="DpdClassic\EventListeners\SendEMail" scope="request">
             <argument type="service" id="thelia.parser" />
             <argument type="service" id="mailer"/>
@@ -40,6 +40,6 @@
             <argument type="service" id="service_container"/>
             <tag name="kernel.event_subscriber"/>
         </service>
-    </services>
+    </services>-->
 
 </config>
