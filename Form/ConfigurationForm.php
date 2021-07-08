@@ -3,6 +3,7 @@
 namespace DpdClassic\Form;
 
 use DpdClassic\DpdClassic;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Thelia\Form\BaseForm;
 
 /**
@@ -12,7 +13,7 @@ use Thelia\Form\BaseForm;
  */
 class ConfigurationForm extends BaseForm
 {
-    public function getName()
+    public static function getName()
     {
         return "config_form";
     }
@@ -29,13 +30,13 @@ class ConfigurationForm extends BaseForm
         $this->formBuilder
             ->add(
                 'default_status',
-                'choice',
+                ChoiceType::class,
                 [
                     'label' => $this->translator->trans('Change order status to', [], DpdClassic::DOMAIN_NAME),
                     'choices' => [
-                        DpdClassic::NO_CHANGE => $this->translator->trans("Do not change", [], DpdClassic::DOMAIN_NAME),
-                        DpdClassic::PROCESS => $this->translator->trans("Set orders status as processing", [], DpdClassic::DOMAIN_NAME),
-                        DpdClassic::SEND => $this->translator->trans("Set orders status as sent", [], DpdClassic::DOMAIN_NAME)
+                        $this->translator->trans("Do not change", [], DpdClassic::DOMAIN_NAME) => DpdClassic::NO_CHANGE,
+                        $this->translator->trans("Set orders status as processing", [], DpdClassic::DOMAIN_NAME) => DpdClassic::PROCESS,
+                        $this->translator->trans("Set orders status as sent", [], DpdClassic::DOMAIN_NAME) => DpdClassic::SEND
                     ],
                     'required' => true,
                     'expanded' => true,

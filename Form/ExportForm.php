@@ -24,6 +24,9 @@
 namespace DpdClassic\Form;
 
 use DpdClassic\DpdClassic;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Thelia\Form\BaseForm;
 use Thelia\Core\Translation\Translator;
 use Thelia\Model\OrderQuery;
@@ -36,7 +39,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
  */
 class ExportForm extends BaseForm
 {
-    public function getName()
+    public static function getName()
     {
         return "export_form";
     }
@@ -56,13 +59,13 @@ class ExportForm extends BaseForm
         $this->formBuilder
             ->add(
                 'new_status_id',
-                'choice',
+                ChoiceType::class,
                 array(
                     'label' => Translator::getInstance()->trans('Change order status to', [], DpdClassic::DOMAIN_NAME),
                     'choices' => array(
-                        DpdClassic::NO_CHANGE => $this->translator->trans("Do not change", [], DpdClassic::DOMAIN_NAME),
-                        DpdClassic::PROCESS => $this->translator->trans("Set orders status as processing", [], DpdClassic::DOMAIN_NAME),
-                        DpdClassic::SEND => $this->translator->trans("Set orders status as sent", [], DpdClassic::DOMAIN_NAME)
+                        $this->translator->trans("Do not change", [], DpdClassic::DOMAIN_NAME) => DpdClassic::NO_CHANGE,
+                        $this->translator->trans("Set orders status as processing", [], DpdClassic::DOMAIN_NAME) => DpdClassic::PROCESS,
+                        $this->translator->trans("Set orders status as sent", [], DpdClassic::DOMAIN_NAME) => DpdClassic::SEND
                     ),
                     'required' => true,
                     'expanded' => true,
@@ -77,7 +80,7 @@ class ExportForm extends BaseForm
             $this->formBuilder
                 ->add(
                     $orderRef,
-                    'checkbox',
+                    CheckboxType::class,
                     array(
                         'label' => $orderRef,
                         'label_attr' => array(
@@ -87,15 +90,15 @@ class ExportForm extends BaseForm
                 )
                 ->add(
                     $orderRef . "-assur",
-                    'checkbox'
+                    CheckboxType::class
                 )
                 ->add(
                     $orderRef . "-pkgNumber",
-                    'number'
+                    NumberType::class
                 )
                 ->add(
                     $orderRef . "-pkgWeight",
-                    'number'
+                    NumberType::class
                 );
         }
     }

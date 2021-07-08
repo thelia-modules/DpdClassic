@@ -29,8 +29,10 @@ use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Translation\Translator;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Security\AccessManager;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * @Route("/admin/module/DpdClassic/update-sender", name="DpdClassic_update-sender")
  * Class ExportExaprintController
  * @package DpdClassic\Controller
  * @author Thelia <info@thelia.net>
@@ -42,6 +44,9 @@ class ExportExaprintController extends BaseAdminController
         return __DIR__ . "/../Config/sender.json";
     }
 
+    /**
+     * @Route("", name="_update", methods="POST")
+     */
     public function updateSenderAction()
     {
         if (null !== $response = $this->checkAuth(
@@ -52,7 +57,7 @@ class ExportExaprintController extends BaseAdminController
             return $response;
         }
 
-        $form = new ExportExaprintForm($this->getRequest());
+        $form = $this->createForm(ExportExaprintForm::getName());
         $error_message = null;
         try {
             $vform = $this->validateForm($form);

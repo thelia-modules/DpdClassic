@@ -3,26 +3,32 @@
 namespace DpdClassic\Controller;
 
 use DpdClassic\DpdClassic;
+use DpdClassic\Form\ConfigurationForm;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\Exception\FormValidationException;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class ConfigurationController
  * @package DpdClassic\Controller
  * @author Etienne Perriere <eperriere@openstudio.fr>
+ * @Route("/admin/module/DpdClassic/config", name="DpdClassic_config")
  */
 class ConfigurationController extends BaseAdminController
 {
+    /**
+     * @Route("", name="_save", methods="POST")
+     */
     public function configureAction()
     {
         if (null !== $response = $this->checkAuth([AdminResources::MODULE], ['DpdClassic'], [AccessManager::CREATE, AccessManager::UPDATE])) {
             return $response;
         }
 
-        $baseForm = $this->createForm("config_form");
+        $baseForm = $this->createForm(ConfigurationForm::getName());
 
         $errorMessage = null;
 

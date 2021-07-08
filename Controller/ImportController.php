@@ -3,7 +3,10 @@
 namespace DpdClassic\Controller;
 
 use DpdClassic\DpdClassic;
+use DpdClassic\Form\FreeShippingForm;
+use DpdClassic\Form\ImportExaprintForm;
 use Propel\Runtime\Propel;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
@@ -12,8 +15,10 @@ use Thelia\Form\Exception\FormValidationException;
 use Thelia\Model\Map\OrderTableMap;
 use Thelia\Model\OrderQuery;
 use Thelia\Tools\URL;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * @Route("/admin/module/DpdClassic", name="DpdClassic")
  * Class ImportController
  * @package DpdClassic\Controller
  * @author Etienne Perriere - OpenStudio <eperriere@openstudio.fr>
@@ -22,15 +27,16 @@ class ImportController extends BaseAdminController
 {
     /**
      * This function supposes that delivery ref is always in the 17th column
+     * @Route("/import", name="_import", methods="POST")
      */
-    public function importFileAction()
+    public function importFileAction(EventDispatcherInterface $eventDispatcher)
     {
         $i = 0;
 
         $con = Propel::getWriteConnection(OrderTableMap::DATABASE_NAME);
         $con->beginTransaction();
 
-        $form = $this->createForm('dpdclassic.import');
+        $form = $this->createForm(ImportExaprintForm::getName());
 
         try {
             $vForm = $this->validateForm($form);
@@ -63,7 +69,7 @@ class ImportController extends BaseAdminController
 
                     // Save delivery ref if there is one
                     if (!empty($deliveryRef)) {
-                        $this->importDeliveryRef($deliveryRef, $orderRef, $i);
+                        $this->importDeliveryRef($deliveryRef, $orderRef, $i, $eventDispatcher);
                     }
                 }
             }
@@ -108,7 +114,7 @@ class ImportController extends BaseAdminController
      * @param string    $orderRef
      * @param int       $i
      */
-    public function importDeliveryRef($deliveryRef, $orderRef, &$i)
+    public function importDeliveryRef($deliveryRef, $orderRef, &$i, EventDispatcherInterface $eventDispatcher)
     {
         // Get order
         $order = OrderQuery::create()
@@ -121,12 +127,13 @@ class ImportController extends BaseAdminController
             // Check if delivery refs are different
             if ($order->getDeliveryRef() != $deliveryRef) {
                 $event->setDeliveryRef($deliveryRef);
-                $this->getDispatcher()->dispatch(TheliaEvents::ORDER_UPDATE_DELIVERY_REF, $event);
+                $eventDispatcher->dispatch($event, TheliaEvents::ORDER_UPDATE_DELIVERY_REF);
 
                 // Set 'sent' order status if not already sent
                 if ($order->getStatusId() != DpdClassic::STATUS_SENT) {
                     $event->setStatus(DpdClassic::STATUS_SENT);
-                    $this->getDispatcher()->dispatch(TheliaEvents::ORDER_UPDATE_STATUS, $event);
+                    $form = $this->$this->createForm(FreeShippingForm::getName());
+                    $eventDispatcher->dispatch($event, TheliaEvents::ORDER_UPDATE_STATUS);
                 }
 
                 $i++;

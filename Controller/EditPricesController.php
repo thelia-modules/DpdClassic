@@ -24,25 +24,31 @@
 namespace DpdClassic\Controller;
 
 use DpdClassic\DpdClassic;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Model\AreaQuery;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Security\AccessManager;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * @Route("/admin/module/DpdClassic/edit-prices", name="DpdClassic_edit-prices")
  * Class EditPricesController
  * @package DpdClassic\Controller
  * @author Thelia <info@thelia.net>
  */
 class EditPricesController extends BaseAdminController
 {
-    public function editPricesAction()
+    /**
+     * @Route("", name="_edit", methods="POST")
+     */
+    public function editPricesAction(RequestStack $requestStack)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), array('DpdClassic'), AccessManager::UPDATE)) {
             return $response;
         }
         // Get data & treat
-        $post = $this->getRequest();
+        $post = $requestStack->getCurrentRequest();
         $operation = $post->get('operation');
         $area = $post->get('area');
         $weight = $post->get('weight');
