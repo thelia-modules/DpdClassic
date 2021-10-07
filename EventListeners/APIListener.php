@@ -68,8 +68,6 @@ class APIListener implements EventSubscriberInterface
             $postageTax = 0; //TODO
         } catch (\Exception $exception) {
             $isValid = false;
-            var_dump($exception->getMessage());
-            var_dump($postage); die;
         }
 
         $minimumDeliveryDate = ''; // TODO (calculate delivery date from day of order)
