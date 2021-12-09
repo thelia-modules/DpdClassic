@@ -16,6 +16,7 @@ use Propel\Runtime\Connection\ConnectionInterface;
 use Thelia\Exception\OrderException;
 use Thelia\Install\Database;
 use Thelia\Model\Country;
+use Thelia\Model\Order;
 use Thelia\Model\OrderPostage;
 use Thelia\Module\AbstractDeliveryModule;
 use Thelia\Module\Exception\DeliveryException;
@@ -187,5 +188,10 @@ class DpdClassic extends AbstractDeliveryModule
     public static function setFreeShippingAmount($amount)
     {
         self::setConfigValue('free_shipping_amount', $amount);
+    }
+
+    public static function getTrackingLink(Order $order)
+    {
+        return "https://tracking.dpd.de/status/". $order->getLang()->getLocale(). "/parcel/". $order->getDeliveryRef();
     }
 }
