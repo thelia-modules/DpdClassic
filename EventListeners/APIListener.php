@@ -9,8 +9,10 @@ use OpenApi\Model\Api\DeliveryModuleOption;
 use OpenApi\Model\Api\ModelFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Core\Translation\Translator;
 use Thelia\Model\CountryArea;
+use Thelia\Model\LangQuery;
 use Thelia\Module\Exception\DeliveryException;
 use Thelia\Model\Base\ModuleQuery;
 
@@ -19,14 +21,18 @@ class APIListener implements EventSubscriberInterface
     /** @var ContainerInterface  */
     protected $container;
 
+    /** @var RequestStack */
+    protected $requestStack;
+
     /**
      * APIListener constructor.
      * @param ContainerInterface $container We need the container because we use a service from another module
      * which is not mandatory, and using its service without it being installed will crash
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, RequestStack $requestStack)
     {
         $this->container = $container;
+        $this->requestStack = $requestStack;
     }
 
     public function getDeliveryModuleOptions(DeliveryModuleOptionEvent $deliveryModuleOptionEvent)
@@ -38,6 +44,8 @@ class APIListener implements EventSubscriberInterface
         $isValid = true;
         $postage = null;
         $postageTax = null;
+
+        $locale = $this->requestStack->getCurrentRequest()->getSession()->getLang()->getLocale();
 
         try {
             $module = new DpdClassic();
@@ -82,7 +90,7 @@ class APIListener implements EventSubscriberInterface
         $deliveryModuleOption
             ->setCode(DpdClassic::getModuleCode())
             ->setValid($isValid)
-            ->setTitle($propelModule->getTitle())
+            ->setTitle($propelModule->setLocale($locale)->getTitle())
             ->setImage('')
             ->setMinimumDeliveryDate($minimumDeliveryDate)
             ->setMaximumDeliveryDate($maximumDeliveryDate)
