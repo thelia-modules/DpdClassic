@@ -109,7 +109,7 @@ class ExportController extends BaseAdminController
                 $valid &= isset($admici[$key]) && ($key === "assur" ? true : !empty($admici[$key]));
             }
             if (!$valid) {
-                return Response::create(
+                return new Response(
                     Translator::getInstance()->trans(
                         "The file DpdClassic/Config/sender.json is not valid. Please correct it.",
                         [],
@@ -119,7 +119,7 @@ class ExportController extends BaseAdminController
                 );
             }
         } else {
-            return Response::create(
+            return new Response(
                 Translator::getInstance()->trans(
                     "Can't read DpdClassic/Config/sender.json. Did you save the export information ?",
                     [],
@@ -159,7 +159,7 @@ class ExportController extends BaseAdminController
         } catch (\Exception $e) {
             Tlog::getInstance()->error("Form dpdclassic.export sent with bad infos. ");
 
-            return Response::create(
+            return new Response(
                 Translator::getInstance()->trans(
                     "Got invalid data : %err",
                     ['%err' => $e->getMessage()],
