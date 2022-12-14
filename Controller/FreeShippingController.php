@@ -38,9 +38,9 @@ class FreeShippingController extends BaseAdminController
 
             DpdClassic::setConfigValue('freeshipping', ($data) ? true : false);
 
-            $response = Response::create('');
+            $response = new Response();
         } catch (\Exception $e) {
-            $response = JsonResponse::create(array("error"=>$e->getMessage()), 500);
+            $response = new JsonResponse(array("error"=>$e->getMessage()), 500);
         }
 
         return $response;
