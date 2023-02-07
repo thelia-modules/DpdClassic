@@ -31,7 +31,6 @@ use Thelia\Core\Event\TheliaEvents;
 use Thelia\Mailer\MailerFactory;
 use Thelia\Core\Template\ParserInterface;
 use Thelia\Model\ConfigQuery;
-use Thelia\Model\MessageQuery;
 
 /**
  * Class SendEMail
@@ -67,42 +66,28 @@ class SendEMail extends BaseAction implements EventSubscriberInterface
      * @params OrderEvent $order
      * Checks if order delivery module is DpdClassic and if order new status is sent, send an email to the customer.
      */
-    public function update_status(OrderEvent $event)
+    public function updateStatus(OrderEvent $event)
     {
         if ($event->getOrder()->getDeliveryModuleId() === DpdClassic::getModuleId()) {
             if ($event->getOrder()->getStatusId() === DpdClassic::STATUS_SENT) {
                 $contact_email = ConfigQuery::read('store_email');
 
                 if ($contact_email) {
-                    $message = MessageQuery::create()
-                        ->filterByName('order_confirmation_dpdclassic')
-                        ->findOne();
-
-                    if (null === $message) {
-                        throw new \Exception("Failed to load message 'order_confirmation_dpdclassic'.");
-                    }
 
                     $order = $event->getOrder();
                     $customer = $order->getCustomer();
 
-                    $this->parser->assign('order_id', $order->getId());
-                    $this->parser->assign('order_ref', $order->getRef());
-                    $this->parser->assign('order_date', $order->getCreatedAt());
-                    $this->parser->assign('update_date', $order->getUpdatedAt());
-                    $this->parser->assign('package', $order->getDeliveryRef());
-
-                    $message
-                        ->setLocale($order->getLang()->getLocale());
-
-                    $instance = \Swift_Message::newInstance()
-                        ->addTo($customer->getEmail(), $customer->getFirstname()." ".$customer->getLastname())
-                        ->addFrom($contact_email, ConfigQuery::read('store_name'))
-                    ;
-
-                    // Build subject and body
-                    $message->buildMessage($this->parser, $instance);
-
-                    $this->getMailer()->send($instance);
+                    $this->mailer->sendEmailToCustomer(
+                        'order_confirmation_dpdclassic',
+                        $customer,
+                        [
+                            'order_id' => $order->getId(),
+                            'order_ref' => $order->getRef(),
+                            'order_date' => $order->getCreatedAt(),
+                            'update_date' => $order->getUpdatedAt(),
+                            'package' => $order->getDeliveryRef(),
+                        ]
+                    );
                 }
             }
         }
@@ -131,7 +116,7 @@ class SendEMail extends BaseAction implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            TheliaEvents::ORDER_UPDATE_STATUS => array("update_status", 128)
+            TheliaEvents::ORDER_UPDATE_STATUS => array("updateStatus", 128)
         );
     }
 }
