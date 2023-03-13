@@ -12,6 +12,8 @@
 
 namespace DpdClassic;
 
+use DpdClassic\Model\PricesSlices;
+use DpdClassic\Service\TranslateService;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Thelia\Exception\OrderException;
@@ -43,11 +45,42 @@ class DpdClassic extends AbstractDeliveryModule
 
     private static $prices = null;
 
+
+
+
     public function postActivation(ConnectionInterface $con = null): void
     {
         $database = new Database($con->getWrappedConnection());
 
         $database->insertSql(null, array(__DIR__ . '/Config/thelia.sql'));
+        $database->insertSql(null, array(__DIR__ . '/Config/TheliaMain.sql'));
+        $this->JsonToDatabase();
+    }
+
+    public function JsonToDatabase()
+    {
+        $json_path= __DIR__.DpdClassic::JSON_PRICE_RESOURCE;
+
+        if (!is_readable($json_path)) {
+            throw new \Exception("Can't read DpdClassic".DpdClassic::JSON_PRICE_RESOURCE.". Please change the rights on the file.");
+        }
+        $json_data = json_decode(file_get_contents($json_path), true);
+
+        foreach ($json_data as $areaIndex => $data){
+
+            foreach ($data["slices"] as $weightIndex => $slice){
+                $priceSlice = new PricesSlices();
+                $priceSlice
+                    ->setWeight($weightIndex)
+                    ->setPrice($slice)
+                    ->setIdArea($areaIndex);
+
+                if (array_key_exists("_info",$data)){
+                    $priceSlice->setInfo($data["_info"]);
+                }
+                $priceSlice->save();
+            }
+        }
     }
 
     /**
@@ -197,4 +230,6 @@ class DpdClassic extends AbstractDeliveryModule
             ->autowire(true)
             ->autoconfigure(true);
     }
+
+
 }
