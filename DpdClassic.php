@@ -13,6 +13,7 @@
 namespace DpdClassic;
 
 use DpdClassic\Model\PricesSlices;
+use DpdClassic\Model\PricesSlicesQuery;
 use DpdClassic\Service\TranslateService;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
@@ -46,13 +47,10 @@ class DpdClassic extends AbstractDeliveryModule
     private static $prices = null;
 
 
-
-
     public function postActivation(ConnectionInterface $con = null): void
     {
         $database = new Database($con->getWrappedConnection());
 
-        $database->insertSql(null, array(__DIR__ . '/Config/thelia.sql'));
         $database->insertSql(null, array(__DIR__ . '/Config/TheliaMain.sql'));
         $this->JsonToDatabase();
     }
@@ -121,19 +119,28 @@ class DpdClassic extends AbstractDeliveryModule
 
     public static function getPrices()
     {
-        if (null === self::$prices) {
-            if (is_readable(sprintf('%s/%s', __DIR__, self::JSON_PRICE_RESOURCE))) {
-                self::$prices = json_decode(
-                    file_get_contents(sprintf('%s/%s', __DIR__, self::JSON_PRICE_RESOURCE)),
-                    true
-                );
-            } else {
-                self::$prices = null;
+        $idAreas = PricesSlicesQuery::create()->select(['id_area'])->setDistinct()->find()->getData();
+        foreach ($idAreas as $idArea){
+            $priceSliceInfo = PricesSlicesQuery::create()->findOneByIdArea($idArea)->getInfo();
+            if ($priceSliceInfo !== null){
+                $prices[(string)$idArea]['info_'] = $priceSliceInfo;
+            }
+            $prices[(string)$idArea]['slices'] = [];
+        }
+        foreach ($idAreas as $idArea){
+            $pricesSlices = PricesSlicesQuery::create()->filterByIdArea($idArea);
+            foreach ($pricesSlices as $pricesSlice){
+                $price = $pricesSlice->getPrice();
+                $weight = (string)$pricesSlice->getWeight();
+                if (strpos( $weight, "." )){
+                    $price = (string)$price;
+                }
+                $prices[$idArea]['slices'][$weight] = $price;
             }
         }
-
-        return self::$prices;
+        return $prices;
     }
+
 
     /**
      * Calculate and return delivery price in the shop's default currency
