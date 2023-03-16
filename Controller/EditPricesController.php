@@ -24,6 +24,8 @@
 namespace DpdClassic\Controller;
 
 use DpdClassic\DpdClassic;
+use DpdClassic\Model\PricesSlices;
+use DpdClassic\Model\PricesSlicesQuery;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Model\AreaQuery;
 use Thelia\Controller\Admin\BaseAdminController;
@@ -53,61 +55,62 @@ class EditPricesController extends BaseAdminController
         $area = $post->get('area');
         $weight = $post->get('weight');
         $price = $post->get('price');
-        if (preg_match("#^add|delete$#", $operation) &&
-            preg_match("#^\d+$#", $area) &&
-            preg_match("#^\d+\.?\d*$#", $weight)
-            ) {
-            // check if area exists in db
-            $exists = AreaQuery::create()
-                ->findPK($area);
 
-            if ($exists !== null) {
-                $json_path= __DIR__."/../".DpdClassic::JSON_PRICE_RESOURCE;
+        $this->validateData($operation,$area,$weight,$price);
 
-                if (is_readable($json_path)) {
-                    $json_data = json_decode(file_get_contents($json_path), true);
-                } elseif (!file_exists($json_path)) {
-                    $json_data = array();
-                } else {
-                    throw new \Exception("Can't read DpdClassic".DpdClassic::JSON_PRICE_RESOURCE.". Please change the rights on the file.");
-                }
 
-                if ((float) $weight > 0 && $operation == "add"
-                  && preg_match("#\d+\.?\d*#", $price)) {
-                    $json_data[$area]['slices'][$weight] = $price;
-                } elseif ($operation == "delete") {
-                    if (isset($json_data[$area]['slices'][$weight])) {
-                        unset($json_data[$area]['slices'][$weight]);
-                    }
-                } else {
-                    throw new \Exception("Weight must be superior to 0");
-                }
+        if ($operation === "add") {
 
-                ksort($json_data[$area]['slices']);
-
-                if ((file_exists($json_path) ?is_writable($json_path):is_writable(__DIR__."/../"))) {
-                    $file = fopen($json_path, 'w');
-                    fwrite($file, json_encode($json_data));
-                    ;
-                    fclose($file);
-                } else {
-                    throw new \Exception("Can't write DpdClassic".DpdClassic::JSON_PRICE_RESOURCE.". Please change the rights on the file.");
-                }
-            } else {
-                throw new \Exception("Area not found");
+            $priceSlice = PricesSlicesQuery::create()->filterByIdArea($area)->filterByWeight($weight)->findOne();
+            if ($priceSlice === null) {
+                $priceSlice = new PricesSlices();
             }
-        } else {
-            throw new \ErrorException("Arguments are missing or invalid");
+
+            $priceSlice
+                ->setIdArea($area)
+                ->setPrice($price)
+                ->setWeight($weight)
+                ->save();
+        }
+        if ($operation === "delete") {
+            $priceSlice = PricesSlicesQuery::create()->filterByIdArea($area)->filterByWeight($weight)->findOne();
+
+            if ($priceSlice !== null) {
+                $priceSlice->delete();
+            }
         }
 
         return $this->generateRedirectFromRoute(
             "admin.module.configure",
             [],
             [
-                'module_code'=>"DpdClassic",
-                'current_tab'=>"price_slices_tab",
+                'module_code' => "DpdClassic",
+                'current_tab' => "price_slices_tab",
                 '_controller' => 'Thelia\\Controller\\Admin\\ModuleController::configureAction'
             ]
         );
+    }
+
+    public function validateData($operation,$area,$weight,$price)
+    {
+        if (!preg_match("#^add|delete$#", $operation) || !preg_match("#^\d+$#", $area) || !preg_match("#^\d+\.?\d*$#", $weight)) {
+            throw new \ErrorException("Arguments are missing or invalid");
+        }
+
+        // check if area exists in db
+        $exists = AreaQuery::create()
+            ->findPK($area);
+
+        if ($exists === null) {
+            throw new \Exception("Area not found");
+        }
+
+        if ((float)$weight < 0) {
+            throw new \Exception("Weight must be superior to 0");
+        }
+
+        if (!preg_match("#\d+\.?\d*#", $price) && $operation === "add") {
+            throw new \ErrorException("Arguments are missing or invalid");
+        }
     }
 }
