@@ -370,15 +370,15 @@
                                 </div>
                                 {/form_field}
 
-                                {form_field field="expcode"}
-                                <div class="form-group {if $error}has-error{/if}">
-                                    <label for="{$label_attr.for}" class="control-label">
-                                        {$label} :
-                                    </label>
-
-                                    <input type="text" id="{$label_attr.for}" name="{$name}" value="{$value}" placeholder="{intl d='dpdclassic.bo.default' l='expcode'}" class="form-control" {literal}pattern="\d{8}"{/literal}/>
+                                <div class="form-group">
+                                    {form_field field="expcode"}
+                                        <label for="{$label_attr.for}" class="control-label">{$label} :</label>
+                                        <input type="password" id="mdp" name="{$name}" class="form-control" value="{$data}" placeholder="{intl d='dpdclassic.bo.default' l='expcode'}" aria-describedby="pwdHelpBlock">
+                                        <button type="button" class="eye btn btn-primary btn-responsive" style="color:#FFF;background-color:#f6993c" onclick="togglePwd('mdp');">
+                                            <i class="glyphicon glyphicon-eye-open"></i>
+                                        </button>
+                                    {/form_field}
                                 </div>
-                                {/form_field}
 
                                 <div class="form-group">
                                     <button type="submit" name="save_mode" value="stay" class="form-submit-button btn btn-sm btn-default btn-success">{intl d='dpdclassic.bo.default' l='Save changes'} <span class="glyphicon glyphicon-ok"></span></button>
@@ -570,3 +570,11 @@
 
     {/elseloop}
 </div>
+
+<script>
+    function togglePwd(id)
+    {
+        var x = document.getElementById(id);
+        x.type = (x.type === "password")? "text" : "password";
+    }
+</script>

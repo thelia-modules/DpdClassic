@@ -26,6 +26,7 @@ namespace DpdClassic\Form;
 use DpdClassic\Controller\ExportExaprintController;
 use DpdClassic\DpdClassic;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
@@ -150,7 +151,7 @@ class ExportExaprintForm extends BaseForm
             )
             ->add(
                 'expcode',
-                TextType::class,
+                PasswordType::class,
                 array(
                     'label' => Translator::getInstance()->trans('DpdClassic Sender\'s code', [], DpdClassic::DOMAIN_NAME),
                     'constraints' => array(new NotBlank(), new Regex(['pattern' => "#^\d{8}$#"])),
