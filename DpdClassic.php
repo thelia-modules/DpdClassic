@@ -38,6 +38,8 @@ class DpdClassic extends AbstractDeliveryModule
 
     const JSON_PRICE_RESOURCE = "/Config/prices.json";
 
+    const DPD_CLASSIC_TAX_RULE_ID = 'dpd_classic_tax_rule_id';
+
     protected $request;
     protected $dispatcher;
 
@@ -46,6 +48,10 @@ class DpdClassic extends AbstractDeliveryModule
     public function postActivation(ConnectionInterface $con = null): void
     {
         $database = new Database($con->getWrappedConnection());
+
+        if (!self::getConfigValue(self::DPD_CLASSIC_TAX_RULE_ID)) {
+            self::setConfigValue(self::DPD_CLASSIC_TAX_RULE_ID, null);
+        }
 
         $database->insertSql(null, array(__DIR__ . '/Config/thelia.sql'));
     }
