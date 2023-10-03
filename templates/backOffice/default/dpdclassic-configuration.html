@@ -36,6 +36,9 @@
             {if $smarty.get.current_tab eq "config"}
                 {assign var="tab" value="4"}
             {/if}
+            {if $smarty.get.current_tab eq "tax_rule"}
+            {assign var="tab" value="5"}
+            {/if}
         {/if}
 
         <div class="row">
@@ -47,6 +50,7 @@
                     <li class="{if $tab eq "2"}active{/if}"><a data-toggle="tab" href="#configure_export_exaprint">{intl d='dpdclassic.bo.default' l="Configure sender address"}</a></li>
                     <li class="{if $tab eq "3"}active{/if}"><a data-toggle="tab" href="#prices_slices_tab">{intl d='dpdclassic.bo.default' l="Price slices"}</a></li>
                     <li class="{if $tab eq "4"}active{/if}"><a data-toggle="tab" href="#configuration_tab">{intl d='dpdclassic.bo.default' l="Configuration"}</a></li>
+                    <li class="{if $tab eq "5"}active{/if}"><a data-toggle="tab" href="#tax_rule">{intl d='dpdclassic.bo.default' l="Tax Rule"}</a></li>
                 </ul>
                 <br/>
 
@@ -370,15 +374,15 @@
                                 </div>
                                 {/form_field}
 
-                                {form_field field="expcode"}
-                                <div class="form-group {if $error}has-error{/if}">
-                                    <label for="{$label_attr.for}" class="control-label">
-                                        {$label} :
-                                    </label>
-
-                                    <input type="text" id="{$label_attr.for}" name="{$name}" value="{$value}" placeholder="{intl d='dpdclassic.bo.default' l='expcode'}" class="form-control" {literal}pattern="\d{8}"{/literal}/>
+                                <div class="form-group">
+                                    {form_field field="expcode"}
+                                        <label for="{$label_attr.for}" class="control-label">{$label} :</label>
+                                        <input type="password" id="mdp" name="{$name}" class="form-control" value="{$data}" placeholder="{intl d='dpdclassic.bo.default' l='expcode'}" aria-describedby="pwdHelpBlock">
+                                        <button type="button" class="eye btn btn-primary btn-responsive" style="color:#FFF;background-color:#f6993c" onclick="togglePwd('mdp');">
+                                            <i class="glyphicon glyphicon-eye-open"></i>
+                                        </button>
+                                    {/form_field}
                                 </div>
-                                {/form_field}
 
                                 <div class="form-group">
                                     <button type="submit" name="save_mode" value="stay" class="form-submit-button btn btn-sm btn-default btn-success">{intl d='dpdclassic.bo.default' l='Save changes'} <span class="glyphicon glyphicon-ok"></span></button>
@@ -564,9 +568,36 @@
                         </div>
                     </div><!-- /prices tab -->
 
+                    <div id="tax_rule" class="tab-pane {if $tab eq "5"}active{/if} form-container">
+                    <br>
+                        <div class="title">
+                            {intl l="DpdClassic Tax Rule configuration" d='dpdclassic.bo.default'}
+                        </div>
+
+                        {form name="dpdclassic_form_tax_rule_form"}
+                        <form action="{url path="/admin/module/DpdClassic/tax_rule/save"}" method="post" >
+                            {form_hidden_fields}
+
+                            {render_form_field field='tax_rule_id'}
+
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit">{intl l="Save"}</button>
+                            </span>
+                        </form>
+                        {/form}
+                    </div><!-- /tax_rule tab -->
+
                 </div><!-- /tab-content -->
             </div>
         </div>
 
     {/elseloop}
 </div>
+
+<script>
+    function togglePwd(id)
+    {
+        var x = document.getElementById(id);
+        x.type = (x.type === "password")? "text" : "password";
+    }
+</script>

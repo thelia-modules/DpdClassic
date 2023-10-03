@@ -20,6 +20,7 @@ return array(
     'Delete this price slice' => 'Supprimer cette tranche de prix',
     'Do not change' => 'Ne pas changer',
     'Do you really want to delete this slice ?' => 'Voulez-vous réellement supprimer cette tranche de prix ?',
+    'DpdClassic Tax Rule configuration' => 'Configuration des Règles de taxes DpdClassic',
     'Edit' => 'Modifier',
     'Edit a price slice' => 'Modifier une tranche de prix',
     'Edit this price slice' => 'Editer cette tranche de prix',
@@ -28,6 +29,7 @@ return array(
     'If you choose this option, the exported orders would not be available on this page anymore' => 'Si vous choisissez cette option, les commandes exportées ne seront plus disponibles sur cette page',
     'Import' => 'Import',
     'Number of packages' => 'Nombre de colis',
+    'Or activate free shipping from' => 'Ou activer le port gratuit à partir de',
     'Package warranty' => 'Garantie du colis',
     'Packages weight' => 'Poids des colis',
     'Please change the access rights' => 'Merci de modifier les droits d\'accès',
@@ -36,8 +38,10 @@ return array(
     'Processing' => 'Traitement',
     'REF' => 'Référence',
     'Reverse selection' => 'Inverser la sélection',
+    'Save' => 'Enregistrer',
     'Save changes' => 'Enregistrer les changements',
     'Sent' => 'Envoyée',
+    'Tax Rule' => 'Règles de taxes',
     'There are currently no pending order to ship by DPD Classic.' => 'Vous n\'avez actuellement aucune commande en attente d\'expédition par DpdClassic.',
     'Total taxed amount' => 'Total TTC',
     'Track parcel' => 'Suivre le colis',
@@ -54,6 +58,4 @@ return array(
     'name' => 'Nom',
     'tel' => 'Téléphone',
     'zipcode' => 'Code postal',
-    'Or activate free shipping from' => 'Ou activer le port gratuit à partir de',
-    'Save' => 'Enregistrer'
 );

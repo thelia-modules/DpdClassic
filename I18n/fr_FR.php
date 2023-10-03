@@ -10,6 +10,7 @@ return array(
     'Can\'t write DpdClassic/Config/sender.json. Please change the rights on the file and/or the directory.' => 'Le fichier DpdClassic/Config/sender.json ne peut être écrit. Veuillez changer les droits d\'accès sur le fichier et/ou dossier',
     'Can\'t write file' => 'Le fichier suivant ne peut être écrit',
     'Change order status to' => 'Modifier le statut des commandes après l\'export',
+    'Default Tax rule' => 'Règles de taxes par défaut',
     'Do not change' => 'Ne pas changer',
     'DpdClassic Sender\'s code' => 'Code DPD de l\'expéditeur',
     'Error while updating status' => 'Erreur lors de la mise à jour du statut par défaut',
@@ -28,5 +29,6 @@ return array(
     'Set orders status as processing' => 'Traitement',
     'Set orders status as sent' => 'Envoyée',
     'Sorry, an error occurred: %err' => 'Désolé, une erreur s\'est produite : %err',
+    'Tax Rule' => 'Règles de taxes',
     'The file DpdClassic/Config/sender.json is not valid. Please correct it.' => 'Le fichier DpdClassic/Config/sender.json n\'est pas valide. Veuillez le corriger.',
 );
