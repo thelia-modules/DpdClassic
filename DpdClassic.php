@@ -18,10 +18,11 @@ use Thelia\Exception\OrderException;
 use Thelia\Install\Database;
 use Thelia\Model\Country;
 use Thelia\Model\OrderPostage;
-use Thelia\Module\AbstractDeliveryModule;
+use Thelia\Model\State;
+use Thelia\Module\AbstractDeliveryModuleWithState;
 use Thelia\Module\Exception\DeliveryException;
 
-class DpdClassic extends AbstractDeliveryModule
+class DpdClassic extends AbstractDeliveryModuleWithState
 {
     const DOMAIN_NAME = 'dpdclassic';
 
@@ -63,11 +64,12 @@ class DpdClassic extends AbstractDeliveryModule
      * If you return true, the delivery method will de displayed to the customer
      * If you return false, the delivery method will not be displayed
      *
-     * @param Country $country the country to deliver to.
      *
+     * @param Country $country
+     * @param State|null $state
      * @return boolean
      */
-    public function isValidDelivery(Country $country)
+    public function isValidDelivery(Country $country, State $state = null)
     {
         $cartWeight = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher())->getWeight();
 
@@ -111,35 +113,38 @@ class DpdClassic extends AbstractDeliveryModule
     /**
      * Calculate and return delivery price in the shop's default currency
      *
-     * @param Country $country the country to deliver to.
      *
+     * @param Country $country
+     * @param State|null $state
      * @return OrderPostage|float             the delivery price
      * @throws DeliveryException if the postage price cannot be calculated.
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function getPostage(Country $country)
+    public function getPostage(Country $country, State $state = null)
     {
         $cart = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher());
 
-        $postage = self::getPostageAmount(
-            $country->getAreaId(),
+        $postage = self::getOrderPostage(
+            $country,
             $cart->getWeight(),
+            $this->getRequest()->getSession()->getLang()->getLocale(),
             $cart->getTaxedAmount($country)
         );
 
         return $postage;
     }
 
-    public static function getPostageAmount($areaId, $weight, $cartAmount = 0)
+    public function getOrderPostage($country, $weight, $locale, $cartAmount = 0)
     {
         $freeShipping = Dpdclassic::getConfigValue('freeshipping');
         $postage=0;
+        $areaId = $country->getAreaId();
 
         if (!$freeShipping) {
             $freeShippingAmount = (float) self::getFreeShippingAmount();
 
-            //If a min price for freeShipping is define and the amount of cart reach this montant return 0
-            //Be carefull ! Thelia cartAmount is a decimal with 6 in precision ! That's why we must round cart amount
+            //If a min price for freeShipping is defined and the amount of cart reach this amount return 0
+            //Be careful ! Thelia cartAmount is a decimal with 6 in precision ! That's why we must round cart amount
             if ($freeShippingAmount > 0 && $freeShippingAmount <= round($cartAmount, 2)) {
                 return 0;
             }
@@ -178,7 +183,7 @@ class DpdClassic extends AbstractDeliveryModule
             }
         }
 
-        return (float) $postage;
+        return $this->buildOrderPostage($postage, $country, $locale, self::getConfigValue(self::DPD_CLASSIC_TAX_RULE_ID));
     }
 
 
