@@ -124,7 +124,7 @@ class DpdClassic extends AbstractDeliveryModuleWithState
     {
         $cart = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher());
 
-        $postage = self::getOrderPostage(
+        $postage = $this->getOrderPostage(
             $country,
             $cart->getWeight(),
             $this->getRequest()->getSession()->getLang()->getLocale(),
@@ -134,7 +134,7 @@ class DpdClassic extends AbstractDeliveryModuleWithState
         return $postage;
     }
 
-    public function getOrderPostage($country, $weight, $locale, $cartAmount = 0)
+    public function getOrderPostage($country, $weight, $locale, $cartAmount = 0): OrderPostage
     {
         $freeShipping = Dpdclassic::getConfigValue('freeshipping');
         $postage=0;

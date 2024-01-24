@@ -43,7 +43,6 @@ class APIListener implements EventSubscriberInterface
 
         $isValid = true;
         $postage = null;
-        $postageTax = null;
 
         $locale = $this->requestStack->getCurrentRequest()->getSession()->getLang()->getLocale();
 
@@ -51,29 +50,12 @@ class APIListener implements EventSubscriberInterface
             $module = new DpdClassic();
             $country = $deliveryModuleOptionEvent->getCountry();
 
-            if (empty($module->getAreaForCountry($country))) {
-                throw new DeliveryException(Translator::getInstance()->trans("Your delivery country is not covered by DpdClassic"));
-            }
-
-            $countryAreas = $country->getCountryAreas();
-            $areasArray = [];
-
-            /** @var CountryArea $countryArea */
-            foreach ($countryAreas as $countryArea) {
-                $areasArray[] = $countryArea->getAreaId();
-            }
-
-            if (empty($countryAreas->getFirst())) {
-                throw new DeliveryException(Translator::getInstance()->trans("Your delivery country is not covered by DpdClassic"));
-            }
-
-            $postage = $module->getPostageAmount(
-                $countryAreas->getFirst()->getAreaId(),
+            $postage = $module->getOrderPostage(
+                $country,
                 $deliveryModuleOptionEvent->getCart()->getWeight(),
+                $locale,
                 $deliveryModuleOptionEvent->getCart()->getTaxedAmount($country)
             );
-
-            $postageTax = 0; //TODO
         } catch (\Exception $exception) {
             $isValid = false;
         }
@@ -94,9 +76,9 @@ class APIListener implements EventSubscriberInterface
             ->setImage('')
             ->setMinimumDeliveryDate($minimumDeliveryDate)
             ->setMaximumDeliveryDate($maximumDeliveryDate)
-            ->setPostage($postage)
-            ->setPostageTax($postageTax)
-            ->setPostageUntaxed($postage - $postageTax)
+            ->setPostage($postage?->getAmount())
+            ->setPostageTax($postage?->getAmountTax())
+            ->setPostageUntaxed($postage?->getAmount() - $postage?->getAmountTax())
         ;
 
         $deliveryModuleOptionEvent->appendDeliveryModuleOptions($deliveryModuleOption);
