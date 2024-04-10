@@ -450,7 +450,8 @@
                             <!-- Prices editing -->
                             <div id="table-prices-dpdclassic" {if $isDpdClassicFreeShipping eq 1} style="display:none;" {/if}>
                                 {* -- Add price slice confirmation dialog ----------------------------------- *}
-                                {loop type="area" name="list area" backend_context=true}
+                                {loop type="module" name="dpd_classic_id" code="DpdClassic"}
+                                {loop type="area" name="list area" backend_context=true module_id=$ID}
 
                                 {capture name="create_dialog"}
                                     <input type="hidden" name="operation" value="add"/>
@@ -562,6 +563,7 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                {/loop}
                                 {/loop}
 
                             </div>
