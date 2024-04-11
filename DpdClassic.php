@@ -13,6 +13,7 @@
 namespace DpdClassic;
 
 use Propel\Runtime\Connection\ConnectionInterface;
+use Propel\Runtime\Propel;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Thelia\Exception\OrderException;
 use Thelia\Install\Database;
@@ -21,6 +22,7 @@ use Thelia\Model\OrderPostage;
 use Thelia\Model\State;
 use Thelia\Module\AbstractDeliveryModuleWithState;
 use Thelia\Module\Exception\DeliveryException;
+use PDO;
 
 class DpdClassic extends AbstractDeliveryModuleWithState
 {
@@ -73,21 +75,23 @@ class DpdClassic extends AbstractDeliveryModuleWithState
     {
         $cartWeight = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher())->getWeight();
 
-        $areaId = $country->getAreaId();
+        $areaIds = $this->getAllAreasForCountry($country);
 
         $prices = self::getPrices();
 
-        /* Check if DpdClassic delivers the asked area */
-        if (isset($prices[$areaId]) && isset($prices[$areaId]["slices"])) {
-            $areaPrices = $prices[$areaId]["slices"];
-            ksort($areaPrices);
+        foreach ($areaIds as $areaId) {
+            /* Check if DpdClassic delivers the asked area */
+            if (isset($prices[$areaId]) && isset($prices[$areaId]["slices"])) {
+                $areaPrices = $prices[$areaId]["slices"];
+                ksort($areaPrices);
 
-            /* check this weight is not too much */
-            end($areaPrices);
+                /* check this weight is not too much */
+                end($areaPrices);
 
-            $maxWeight = key($areaPrices);
-            if ($cartWeight <= $maxWeight) {
-                return true;
+                $maxWeight = key($areaPrices);
+                if ($cartWeight <= $maxWeight) {
+                    return true;
+                }
             }
         }
 
@@ -138,7 +142,8 @@ class DpdClassic extends AbstractDeliveryModuleWithState
     {
         $freeShipping = Dpdclassic::getConfigValue('freeshipping');
         $postage=0;
-        $areaId = $country->getAreaId();
+        $areasIds = $this->getAllAreasForCountry($country);
+        $foundArea = false;
 
         if (!$freeShipping) {
             $freeShippingAmount = (float) self::getFreeShippingAmount();
@@ -151,35 +156,45 @@ class DpdClassic extends AbstractDeliveryModuleWithState
 
             $prices = self::getPrices();
 
-            /* check if DpdClassic delivers the asked area */
-            if (!isset($prices[$areaId]) || !isset($prices[$areaId]["slices"])) {
+            foreach ($areasIds as $areaId) {
+                /* check if DpdClassic delivers the asked area */
+                if (!isset($prices[$areaId]) || !isset($prices[$areaId]["slices"])) {
+                    continue;
+                }
+
+                $foundArea = true;
+
+                $areaPrices = $prices[$areaId]["slices"];
+                ksort($areaPrices);
+
+                /* check this weight is not too much */
+                end($areaPrices);
+                $maxWeight = key($areaPrices);
+                if ($weight > $maxWeight) {
+                    throw new DeliveryException(
+                        sprintf("DPD Classic delivery unavailable for this cart weight (%s kg)", $weight),
+                        OrderException::DELIVERY_MODULE_UNAVAILABLE
+                    );
+                }
+
+                $postage = current($areaPrices);
+
+                while (prev($areaPrices)) {
+                    if ($weight > key($areaPrices)) {
+                        break;
+                    }
+
+                    $postage = current($areaPrices);
+                }
+
+                break;
+            }
+
+            if (!$foundArea) {
                 throw new DeliveryException(
                     "DPD Classic delivery unavailable for the chosen delivery country",
                     OrderException::DELIVERY_MODULE_UNAVAILABLE
                 );
-            }
-
-            $areaPrices = $prices[$areaId]["slices"];
-            ksort($areaPrices);
-
-            /* check this weight is not too much */
-            end($areaPrices);
-            $maxWeight = key($areaPrices);
-            if ($weight > $maxWeight) {
-                throw new DeliveryException(
-                    sprintf("DPD Classic delivery unavailable for this cart weight (%s kg)", $weight),
-                    OrderException::DELIVERY_MODULE_UNAVAILABLE
-                );
-            }
-
-            $postage = current($areaPrices);
-
-            while (prev($areaPrices)) {
-                if ($weight > key($areaPrices)) {
-                    break;
-                }
-
-                $postage = current($areaPrices);
             }
         }
 
@@ -207,5 +222,32 @@ class DpdClassic extends AbstractDeliveryModuleWithState
             ->exclude([THELIA_MODULE_DIR . ucfirst(self::getModuleCode()). "/I18n/*"])
             ->autowire(true)
             ->autoconfigure(true);
+    }
+
+    /**
+     * Returns ids of area containing this country and covered by this module
+     * @param Country $country
+     * @return array Area ids
+     */
+    public function getAllAreasForCountry(Country $country)
+    {
+        $areaArray = [];
+
+        $sql = 'SELECT ca.area_id as area_id FROM country_area ca
+               INNER JOIN area_delivery_module adm ON (ca.area_id = adm.area_id AND adm.delivery_module_id = :p0)
+               WHERE ca.country_id = :p1';
+
+        $con = Propel::getConnection();
+
+        $stmt = $con->prepare($sql);
+        $stmt->bindValue(':p0', $this->getModuleModel()->getId(), PDO::PARAM_INT);
+        $stmt->bindValue(':p1', $country->getId(), PDO::PARAM_INT);
+        $stmt->execute();
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $areaArray[] = $row['area_id'];
+        }
+
+        return $areaArray;
     }
 }
