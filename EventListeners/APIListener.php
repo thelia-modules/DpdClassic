@@ -1,62 +1,57 @@
 <?php
 
+/*
+ * This file is part of the Thelia package.
+ * http://www.thelia.net
+ *
+ * (c) OpenStudio <info@thelia.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace DpdClassic\EventListeners;
 
 use DpdClassic\DpdClassic;
-use OpenApi\Events\DeliveryModuleOptionEvent;
-use OpenApi\Events\OpenApiEvents;
-use OpenApi\Model\Api\DeliveryModuleOption;
-use OpenApi\Model\Api\ModelFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Thelia\Core\Translation\Translator;
-use Thelia\Model\CountryArea;
-use Thelia\Model\LangQuery;
-use Thelia\Module\Exception\DeliveryException;
+use Thelia\Api\Bridge\Propel\Event\DeliveryModuleOptionEvent;
+use Thelia\Api\Resource\DeliveryModuleOption;
+use Thelia\Core\Event\TheliaEvents;
+use Thelia\Core\HttpFoundation\Session\Session;
 use Thelia\Model\Base\ModuleQuery;
 
-class APIListener implements EventSubscriberInterface
+readonly class APIListener implements EventSubscriberInterface
 {
-    /** @var ContainerInterface  */
-    protected $container;
-
-    /** @var RequestStack */
-    protected $requestStack;
-
-    /**
-     * APIListener constructor.
-     * @param ContainerInterface $container We need the container because we use a service from another module
-     * which is not mandatory, and using its service without it being installed will crash
-     */
-    public function __construct(ContainerInterface $container, RequestStack $requestStack)
-    {
-        $this->container = $container;
-        $this->requestStack = $requestStack;
+    public function __construct(
+        private Session $session,
+    ) {
     }
 
-    public function getDeliveryModuleOptions(DeliveryModuleOptionEvent $deliveryModuleOptionEvent)
+    public function getDeliveryModuleOptions(DeliveryModuleOptionEvent $deliveryModuleOptionEvent): void
     {
         if ($deliveryModuleOptionEvent->getModule()->getId() !== DpdClassic::getModuleId()) {
-            return ;
+            return;
         }
 
         $isValid = true;
         $postage = null;
 
-        $locale = $this->requestStack->getCurrentRequest()->getSession()->getLang()->getLocale();
+        $locale = $this->session->getLang()->getLocale();
 
         try {
             $module = new DpdClassic();
             $country = $deliveryModuleOptionEvent->getCountry();
-
+            $cart = $deliveryModuleOptionEvent->getCart();
+            if (null === $cart) {
+                throw new \Exception('Cart not found');
+            }
             $postage = $module->getOrderPostage(
                 $country,
-                $deliveryModuleOptionEvent->getCart()->getWeight(),
+                $cart->getWeight(),
                 $locale,
-                $deliveryModuleOptionEvent->getCart()->getTaxedAmount($country)
+                $cart->getTaxedAmount($country)
             );
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
             $isValid = false;
         }
 
@@ -67,8 +62,7 @@ class APIListener implements EventSubscriberInterface
             ->filterById(DpdClassic::getModuleId())
             ->findOne();
 
-        /** @var DeliveryModuleOption $deliveryModuleOption */
-        $deliveryModuleOption = ($this->container->get('open_api.model.factory'))->buildModel('DeliveryModuleOption');
+        $deliveryModuleOption = new DeliveryModuleOption();
         $deliveryModuleOption
             ->setCode(DpdClassic::getModuleCode())
             ->setValid($isValid)
@@ -84,13 +78,13 @@ class APIListener implements EventSubscriberInterface
         $deliveryModuleOptionEvent->appendDeliveryModuleOptions($deliveryModuleOption);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         $listenedEvents = [];
 
-        /** Check for old versions of Thelia where the events used by the API didn't exists */
+        /* Check for old versions of Thelia where the events used by the API didn't exists */
         if (class_exists(DeliveryModuleOptionEvent::class)) {
-            $listenedEvents[OpenApiEvents::MODULE_DELIVERY_GET_OPTIONS] = array("getDeliveryModuleOptions", 129);
+            $listenedEvents[TheliaEvents::MODULE_DELIVERY_GET_OPTIONS] = ['getDeliveryModuleOptions', 129];
         }
 
         return $listenedEvents;
