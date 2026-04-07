@@ -28,6 +28,7 @@ return array(
     'Export file for this order' => 'Exporter le fichier pour cette commande',
     'If you choose this option, the exported orders would not be available on this page anymore' => 'Si vous choisissez cette option, les commandes exportées ne seront plus disponibles sur cette page',
     'Import' => 'Import',
+    'Import price slices configuration' => 'Importer les tranches de prix',
     'Number of packages' => 'Nombre de colis',
     'Or activate free shipping from' => 'Ou activer le port gratuit à partir de',
     'Package warranty' => 'Garantie du colis',

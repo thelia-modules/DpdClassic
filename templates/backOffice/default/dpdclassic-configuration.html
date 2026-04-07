@@ -447,6 +447,28 @@
                                 </div>
                             </div>
 
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            {form name="dpdclassic_form_price_slices_import_form"}
+                                                <form action="{url path="/admin/module/DpdClassic/price-slices/import"}" method="post" {form_enctype}>
+                                                    {render_form_field field="success_url" value={url path='/admin/module/DpdClassic'}}
+                                                    {render_form_field field="error_url" value={url path='/admin/module/DpdClassic'}}
+
+                                                    {form_hidden_fields}
+
+                                                    {render_form_field field='import_file'}
+
+                                                    <button type="submit" class="btn btn-success">{intl l="Import price slices configuration" d="dpdclassic.bo.default"}</button>
+                                                    <a href="{url path="/admin/module/DpdClassic/price-slices/export"}" class="btn btn-primary">{intl l="Export" d="dpdclassic.bo.default"}</a>
+                                                </form>
+                                            {/form}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Prices editing -->
                             <div id="table-prices-dpdclassic" {if $isDpdClassicFreeShipping eq 1} style="display:none;" {/if}>
                                 {* -- Add price slice confirmation dialog ----------------------------------- *}

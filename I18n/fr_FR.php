@@ -16,6 +16,7 @@ return array(
     'Error while updating status' => 'Erreur lors de la mise à jour du statut par défaut',
     'Error while updating the file with sender information' => 'Erreur lors de la mise à jour du fichier expéditeur',
     'Got invalid data : %err' => 'Données invalides reçues : %err',
+    'Import price slices from JSON file' => 'Import des tranches de prix depuis un fichier JSON',
     'Operation successful. %i orders affected.' => 'Opération effectuée avec succès. %i commandes affectées.',
     'Select file to import' => 'Sélectionner un fichier à importer',
     'Sender\'s address1' => 'Adresse de l\'expéditeur',
