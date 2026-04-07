@@ -2,8 +2,10 @@
 
 namespace DpdClassic\Form;
 
+use DpdClassic\DpdClassic;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints;
+use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
 
 class PriceSlicesImportForm extends BaseForm
@@ -16,7 +18,11 @@ class PriceSlicesImportForm extends BaseForm
                 "import_file",
                 FileType::class,
                 [
-                    'label' => 'Import price slices from JSON file',
+                    'label' => Translator::getInstance()->trans(
+                        'Import price slices from JSON file',
+                        [],
+                        DpdClassic::DOMAIN_NAME
+                    ),
                     'required' => true,
                     'constraints' => [
                         new Constraints\NotBlank(),
