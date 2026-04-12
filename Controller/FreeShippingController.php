@@ -11,10 +11,9 @@ use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Tools\URL;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * @Route("/admin/module/DpdClassic", name="DpdClassic")
  * Class FreeShippingController
  * @package DpdClassic\Controller
  * @author Thelia <info@thelia.net>
@@ -24,6 +23,7 @@ class FreeShippingController extends BaseAdminController
     /**
      * @Route("/freeshipping", name="_freeshipping", methods="POST")
      */
+    #[Route('/admin/module/DpdClassic', name: 'DpdClassic')]
     public function changeFreeShippingAction()
     {
         if (null !== $response = $this->checkAuth([AdminResources::MODULE], ["dpdclassic"], AccessManager::UPDATE)) {
@@ -47,8 +47,8 @@ class FreeShippingController extends BaseAdminController
     }
 
     /**
-     * @Route("/freeshipping_amount", name="_freeshipping_amount", methods="POST")
      */
+    #[Route('/freeshipping_amount', name: '_freeshipping_amount', methods: ['POST'])]
     public function amountAction()
     {
         $form = $this->createForm(FreeShippingAmountForm::getName());

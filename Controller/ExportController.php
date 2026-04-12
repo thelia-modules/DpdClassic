@@ -42,10 +42,9 @@ use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Model\OrderStatus;
 use Thelia\Model\OrderStatusQuery;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * @Route("/admin/module/DpdClassic/export", name="DpdClassic_export")
  * Class ExportController
  * @package DpdClassic\Controller
  * @author Thelia <info@thelia.net>
@@ -54,6 +53,7 @@ class ExportController extends BaseAdminController
 {
     // FONCTION POUR LE FICHIER D'EXPORT BY Maitre eroudeix@openstudio.fr
     // extended by bperche9@gmail.com
+    #[Route('/admin/module/DpdClassic/export', name: 'DpdClassic_export')]
     public static function harmonise($value, $type, $len)
     {
         switch ($type) {
@@ -93,8 +93,8 @@ class ExportController extends BaseAdminController
     }
 
     /**
-     * @Route("", name="_export", methods="POST")
      */
+    #[Route(', name=', name: '_export', methods: ['POST'])]
     public function exportFileAction(EventDispatcherInterface $eventDispatcher)
     {
         if (null !== $response = $this->checkAuth([AdminResources::MODULE], ['DpdClassic'], AccessManager::UPDATE)) {

@@ -29,10 +29,9 @@ use Thelia\Model\AreaQuery;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Security\AccessManager;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * @Route("/admin/module/DpdClassic/edit-prices", name="DpdClassic_edit-prices")
  * Class EditPricesController
  * @package DpdClassic\Controller
  * @author Thelia <info@thelia.net>
@@ -42,6 +41,7 @@ class EditPricesController extends BaseAdminController
     /**
      * @Route("", name="_edit", methods="POST")
      */
+    #[Route('/admin/module/DpdClassic/edit-prices', name: 'DpdClassic_edit-prices')]
     public function editPricesAction(RequestStack $requestStack)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), array('DpdClassic'), AccessManager::UPDATE)) {

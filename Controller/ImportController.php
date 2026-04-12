@@ -15,10 +15,9 @@ use Thelia\Form\Exception\FormValidationException;
 use Thelia\Model\Map\OrderTableMap;
 use Thelia\Model\OrderQuery;
 use Thelia\Tools\URL;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * @Route("/admin/module/DpdClassic", name="DpdClassic")
  * Class ImportController
  * @package DpdClassic\Controller
  * @author Etienne Perriere - OpenStudio <eperriere@openstudio.fr>
@@ -29,6 +28,7 @@ class ImportController extends BaseAdminController
      * This function supposes that delivery ref is always in the 17th column
      * @Route("/import", name="_import", methods="POST")
      */
+    #[Route('/admin/module/DpdClassic', name: 'DpdClassic')]
     public function importFileAction(EventDispatcherInterface $eventDispatcher)
     {
         $i = 0;

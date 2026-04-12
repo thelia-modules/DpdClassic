@@ -9,19 +9,19 @@ use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\Exception\FormValidationException;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * Class ConfigurationController
  * @package DpdClassic\Controller
  * @author Etienne Perriere <eperriere@openstudio.fr>
- * @Route("/admin/module/DpdClassic/config", name="DpdClassic_config")
  */
 class ConfigurationController extends BaseAdminController
 {
     /**
      * @Route("", name="_save", methods="POST")
      */
+    #[Route('/admin/module/DpdClassic/config', name: 'DpdClassic_config')]
     public function configureAction()
     {
         if (null !== $response = $this->checkAuth([AdminResources::MODULE], ['DpdClassic'], [AccessManager::CREATE, AccessManager::UPDATE])) {

@@ -29,24 +29,24 @@ use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Translation\Translator;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Security\AccessManager;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * @Route("/admin/module/DpdClassic/update-sender", name="DpdClassic_update-sender")
  * Class ExportExaprintController
  * @package DpdClassic\Controller
  * @author Thelia <info@thelia.net>
  */
 class ExportExaprintController extends BaseAdminController
 {
+    #[Route('/admin/module/DpdClassic/update-sender', name: 'DpdClassic_update-sender')]
     public static function getJSONpath()
     {
         return __DIR__ . "/../Config/sender.json";
     }
 
     /**
-     * @Route("", name="_update", methods="POST")
      */
+    #[Route(', name=', name: '_update', methods: ['POST'])]
     public function updateSenderAction()
     {
         if (null !== $response = $this->checkAuth(
