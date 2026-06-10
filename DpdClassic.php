@@ -71,7 +71,7 @@ class DpdClassic extends AbstractDeliveryModuleWithState
      * @param State|null $state
      * @return boolean
      */
-    public function isValidDelivery(Country $country, State $state = null)
+    public function isValidDelivery(Country $country, ?State $state = null): bool
     {
         $cartWeight = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher())->getWeight();
 
@@ -124,7 +124,7 @@ class DpdClassic extends AbstractDeliveryModuleWithState
      * @throws DeliveryException if the postage price cannot be calculated.
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function getPostage(Country $country, State $state = null)
+    public function getPostage(Country $country, ?State $state = null): OrderPostage|float
     {
         $cart = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher());
 
