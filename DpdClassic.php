@@ -15,8 +15,8 @@ namespace DpdClassic;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Propel;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
+use Thelia\Core\Install\Database;
 use Thelia\Exception\OrderException;
-use Thelia\Install\Database;
 use Thelia\Model\Country;
 use Thelia\Model\OrderPostage;
 use Thelia\Model\State;
@@ -219,7 +219,7 @@ class DpdClassic extends AbstractDeliveryModuleWithState
     public static function configureServices(ServicesConfigurator $servicesConfigurator): void
     {
         $servicesConfigurator->load(self::getModuleCode().'\\', __DIR__)
-            ->exclude([THELIA_MODULE_DIR . ucfirst(self::getModuleCode()). "/I18n/*"])
+            ->exclude([__DIR__ . '/I18n/*', __DIR__ . '/Config/**/*.php', __DIR__ . '/DpdClassic.php'])
             ->autowire(true)
             ->autoconfigure(true);
     }

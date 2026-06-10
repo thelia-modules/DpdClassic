@@ -20,10 +20,7 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 class FreeShippingController extends BaseAdminController
 {
-    /**
-     * @Route("/freeshipping", name="_freeshipping", methods="POST")
-     */
-    #[Route('/admin/module/DpdClassic', name: 'DpdClassic')]
+    #[Route('/admin/module/DpdClassic/freeshipping', name: 'dpdclassic.freeshipping', methods: ['POST'])]
     public function changeFreeShippingAction()
     {
         if (null !== $response = $this->checkAuth([AdminResources::MODULE], ["dpdclassic"], AccessManager::UPDATE)) {
@@ -46,9 +43,7 @@ class FreeShippingController extends BaseAdminController
         return $response;
     }
 
-    /**
-     */
-    #[Route('/freeshipping_amount', name: '_freeshipping_amount', methods: ['POST'])]
+    #[Route('/admin/module/DpdClassic/freeshipping_amount', name: 'dpdclassic.freeshipping_amount', methods: ['POST'])]
     public function amountAction()
     {
         $form = $this->createForm(FreeShippingAmountForm::getName());

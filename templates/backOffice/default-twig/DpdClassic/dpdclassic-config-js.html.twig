@@ -1,0 +1,74 @@
+<script type="module">
+    document.addEventListener('DOMContentLoaded', function () {
+        var checkboxes = [{% for ref in order_refs %}"{{ ref }}"{% if not loop.last %},{% endif %}{% endfor %}];
+
+        // Free shipping toggle (native BS5 switch) -> async save
+        var freeShippingSwitch = document.querySelector('.freeshipping-activation-dpdclassic');
+        if (freeShippingSwitch) {
+            freeShippingSwitch.addEventListener('change', function () {
+                var form = document.getElementById('freeshippingform');
+                if (!form) {
+                    return;
+                }
+
+                var isChecked = freeShippingSwitch.checked;
+                fetch(form.getAttribute('action'), {
+                    method: 'POST',
+                    headers: {'X-Requested-With': 'XMLHttpRequest'},
+                    body: new FormData(form)
+                }).then(function () {
+                    var table = document.getElementById('table-prices-dpdclassic');
+                    var amount = document.getElementById('freeshipping-from-dpdclassic');
+                    if (isChecked) {
+                        if (table) { table.style.display = 'none'; }
+                        if (amount) { amount.style.display = 'none'; }
+                    } else {
+                        if (table) { table.style.display = ''; }
+                        if (amount) { amount.style.display = ''; }
+                    }
+                });
+            });
+        }
+
+        function eachCheckbox(callback) {
+            checkboxes.forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) { callback(el); }
+            });
+        }
+
+        var checkAll = document.getElementById('check-all-but');
+        if (checkAll) {
+            checkAll.addEventListener('click', function (ev) {
+                ev.preventDefault();
+                eachCheckbox(function (el) { el.checked = true; });
+            });
+        }
+
+        var uncheckAll = document.getElementById('uncheck-all-but');
+        if (uncheckAll) {
+            uncheckAll.addEventListener('click', function (ev) {
+                ev.preventDefault();
+                eachCheckbox(function (el) { el.checked = false; });
+            });
+        }
+
+        var reverseAll = document.getElementById('reverse-all-but');
+        if (reverseAll) {
+            reverseAll.addEventListener('click', function (ev) {
+                ev.preventDefault();
+                eachCheckbox(function (el) { el.checked = !el.checked; });
+            });
+        }
+
+        // Activate the tab requested via ?current_tab=...
+        var params = new URLSearchParams(window.location.search);
+        var currentTab = params.get('current_tab');
+        if (currentTab) {
+            var tabLink = document.querySelector('#tabbed-menu a[href="#' + currentTab + '"]');
+            if (tabLink) {
+                bootstrap.Tab.getOrCreateInstance(tabLink).show();
+            }
+        }
+    });
+</script>

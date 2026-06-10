@@ -3,7 +3,6 @@
 namespace DpdClassic\Controller;
 
 use DpdClassic\DpdClassic;
-use DpdClassic\Form\FreeShippingForm;
 use DpdClassic\Form\ImportExaprintForm;
 use Propel\Runtime\Propel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -24,11 +23,8 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 class ImportController extends BaseAdminController
 {
-    /**
-     * This function supposes that delivery ref is always in the 17th column
-     * @Route("/import", name="_import", methods="POST")
-     */
-    #[Route('/admin/module/DpdClassic', name: 'DpdClassic')]
+    // This function supposes that delivery ref is always in the 17th column
+    #[Route('/admin/module/DpdClassic/import', name: 'dpdclassic.import', methods: ['POST'])]
     public function importFileAction(EventDispatcherInterface $eventDispatcher)
     {
         $i = 0;
@@ -132,7 +128,6 @@ class ImportController extends BaseAdminController
                 // Set 'sent' order status if not already sent
                 if ($order->getStatusId() != DpdClassic::STATUS_SENT) {
                     $event->setStatus(DpdClassic::STATUS_SENT);
-                    $form = $this->$this->createForm(FreeShippingForm::getName());
                     $eventDispatcher->dispatch($event, TheliaEvents::ORDER_UPDATE_STATUS);
                 }
 

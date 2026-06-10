@@ -38,10 +38,7 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 class EditPricesController extends BaseAdminController
 {
-    /**
-     * @Route("", name="_edit", methods="POST")
-     */
-    #[Route('/admin/module/DpdClassic/edit-prices', name: 'DpdClassic_edit-prices')]
+    #[Route('/admin/module/DpdClassic/edit-prices', name: 'dpdclassic.edit-prices', methods: ['POST'])]
     public function editPricesAction(RequestStack $requestStack)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), array('DpdClassic'), AccessManager::UPDATE)) {
@@ -49,10 +46,10 @@ class EditPricesController extends BaseAdminController
         }
         // Get data & treat
         $post = $requestStack->getCurrentRequest();
-        $operation = $post->get('operation');
-        $area = $post->get('area');
-        $weight = $post->get('weight');
-        $price = $post->get('price');
+        $operation = $post->request->get('operation');
+        $area = $post->request->get('area');
+        $weight = $post->request->get('weight');
+        $price = $post->request->get('price');
         if (preg_match("#^add|delete$#", $operation) &&
             preg_match("#^\d+$#", $area) &&
             preg_match("#^\d+\.?\d*$#", $weight)

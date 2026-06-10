@@ -38,15 +38,12 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 class ExportExaprintController extends BaseAdminController
 {
-    #[Route('/admin/module/DpdClassic/update-sender', name: 'DpdClassic_update-sender')]
     public static function getJSONpath()
     {
         return __DIR__ . "/../Config/sender.json";
     }
 
-    /**
-     */
-    #[Route(', name=', name: '_update', methods: ['POST'])]
+    #[Route('/admin/module/DpdClassic/update-sender', name: 'dpdclassic.update-sender', methods: ['POST'])]
     public function updateSenderAction()
     {
         if (null !== $response = $this->checkAuth(

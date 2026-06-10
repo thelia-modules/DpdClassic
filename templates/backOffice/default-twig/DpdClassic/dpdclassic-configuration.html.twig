@@ -1,0 +1,376 @@
+{# Migrated from Smarty dpdclassic-configuration.html — hook fragment, no extends #}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title h5 mb-0">{{ 'Configure DpdClassic'|trans({}, 'dpdclassic') }}</h2>
+    </div>
+    <div class="card-body">
+
+        {% if check_rights_errors|length %}
+            {% for error in check_rights_errors %}
+                <div class="alert alert-danger">
+                    <p>{{ error.message }} {{ error.file }} | {{ 'Please change the access rights'|trans({}, 'dpdclassic') }}.</p>
+                </div>
+            {% endfor %}
+        {% else %}
+
+            <ul id="tabbed-menu" class="nav nav-tabs">
+                <li class="nav-item"><a class="nav-link {{ current_tab in ['', 'export_exaprint'] ? 'active' : '' }}" data-bs-toggle="tab" href="#export_exaprint">{{ 'Export'|trans({}, 'dpdclassic') }}</a></li>
+                <li class="nav-item"><a class="nav-link {{ current_tab == 'import_exaprint' ? 'active' : '' }}" data-bs-toggle="tab" href="#import_exaprint">{{ 'Import'|trans({}, 'dpdclassic') }}</a></li>
+                <li class="nav-item"><a class="nav-link {{ current_tab == 'configure_export_exaprint' ? 'active' : '' }}" data-bs-toggle="tab" href="#configure_export_exaprint">{{ 'Configure sender address'|trans({}, 'dpdclassic') }}</a></li>
+                <li class="nav-item"><a class="nav-link {{ current_tab == 'prices_slices_tab' ? 'active' : '' }}" data-bs-toggle="tab" href="#prices_slices_tab">{{ 'Price slices'|trans({}, 'dpdclassic') }}</a></li>
+                <li class="nav-item"><a class="nav-link {{ current_tab == 'config' ? 'active' : '' }}" data-bs-toggle="tab" href="#configuration_tab">{{ 'Configuration'|trans({}, 'dpdclassic') }}</a></li>
+                <li class="nav-item"><a class="nav-link {{ current_tab == 'tax_rule' ? 'active' : '' }}" data-bs-toggle="tab" href="#tax_rule">{{ 'Tax Rule'|trans({}, 'dpdclassic') }}</a></li>
+            </ul>
+            <br>
+
+            <div class="tab-content">
+
+                {# ---------------- Export tab ---------------- #}
+                <div id="export_exaprint" class="tab-pane {{ current_tab in ['', 'export_exaprint'] ? 'active' : '' }}">
+                    {% if orders|length %}
+                        <form method="post" action="{{ path('dpdclassic.export') }}">
+
+                            <div class="card mb-3">
+                                <div class="card-header">{{ 'Change orders status after export'|trans({}, 'dpdclassic') }}</div>
+                                <div class="card-body">
+                                    {% for choice in export_form.new_status_id.vars.choices %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                   id="export_status_{{ choice.value }}"
+                                                   name="{{ export_form.new_status_id.vars.full_name }}"
+                                                   value="{{ choice.value }}"
+                                                   {{ export_form.new_status_id.vars.value == choice.value ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="export_status_{{ choice.value }}">{{ choice.label }}</label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% do export_form.new_status_id.setRendered %}
+
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'REF'|trans({}, 'dpdclassic') }}</th>
+                                    <th>{{ 'Customer'|trans({}, 'dpdclassic') }}</th>
+                                    <th>{{ 'Date'|trans({}, 'dpdclassic') }}</th>
+                                    <th class="text-end">{{ 'Total taxed amount'|trans({}, 'dpdclassic') }}</th>
+                                    <th class="text-center">{{ 'Number of packages'|trans({}, 'dpdclassic') }}</th>
+                                    <th class="text-center">{{ 'Packages weight'|trans({}, 'dpdclassic') }}</th>
+                                    <th class="text-center">{{ 'Package warranty'|trans({}, 'dpdclassic') }}</th>
+                                    <th class="text-center">{{ 'Export'|trans({}, 'dpdclassic') }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for order in orders %}
+                                    {% set ref = order.ref|replace({'.': '-'}) %}
+                                    <tr>
+                                        <td><a href="{{ path('admin.order.update.view', {order_id: order.id}) }}">{{ order.ref }}</a></td>
+                                        <td>
+                                            {% if order.customer_id %}
+                                                <a href="{{ path('admin.customer.update.view', {customer_id: order.customer_id}) }}">{{ order.customer_lastname }} {{ order.customer_firstname }}</a>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ order.create_date ? order.create_date|date('Y-m-d H:i') : '' }}</td>
+                                        <td class="text-end">{{ order.total_taxed_amount }}</td>
+                                        <td>
+                                            <input class="form-control text-center" style="width:70px; margin:auto;" type="text"
+                                                   name="{{ export_form.vars.full_name }}[{{ ref }}-pkgNumber]" value="1">
+                                            {% do attribute(export_form, ref ~ '-pkgNumber').setRendered %}
+                                        </td>
+                                        <td>
+                                            <input class="form-control text-center" style="width:70px; margin:auto;" type="text"
+                                                   name="{{ export_form.vars.full_name }}[{{ ref }}-pkgWeight]" value="0">
+                                            {% do attribute(export_form, ref ~ '-pkgWeight').setRendered %}
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="checkbox" name="{{ export_form.vars.full_name }}[{{ ref }}-assur]" value="true">
+                                            {% do attribute(export_form, ref ~ '-assur').setRendered %}
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="checkbox" id="{{ ref }}" name="{{ export_form.vars.full_name }}[{{ ref }}]" value="true">
+                                            {% do attribute(export_form, ref).setRendered %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <button type="submit" name="save_mode" value="stay" class="btn btn-sm btn-primary">{{ 'Export'|trans({}, 'dpdclassic') }} <i class="bi bi-check-lg"></i></button>
+
+                            <div class="float-end">
+                                <button type="button" id="check-all-but" class="btn btn-sm btn-secondary">{{ 'Check all'|trans({}, 'dpdclassic') }}</button>
+                                <button type="button" id="uncheck-all-but" class="btn btn-sm btn-secondary">{{ 'Uncheck all'|trans({}, 'dpdclassic') }}</button>
+                                <button type="button" id="reverse-all-but" class="btn btn-sm btn-secondary">{{ 'Reverse selection'|trans({}, 'dpdclassic') }}</button>
+                            </div>
+                            {{ form_rest(export_form) }}
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            {{ 'There are currently no pending order to ship by DPD Classic.'|trans({}, 'dpdclassic') }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {# ---------------- Import tab ---------------- #}
+                <div id="import_exaprint" class="tab-pane {{ current_tab == 'import_exaprint' ? 'active' : '' }}">
+                    {% for message in app.flashes('update-orders-result') %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endfor %}
+
+                    <form action="{{ path('dpdclassic.import') }}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="{{ import_form.vars.full_name }}[success_url]" value="{{ path('admin.module.configure', {module_code: 'DpdClassic'}) }}">
+
+                        <div class="mb-3">
+                            <label for="import_file" class="form-label">{{ import_form.import_file.vars.label }} :</label>
+                            <input type="file" id="import_file" class="form-control"
+                                   name="{{ import_form.vars.full_name }}[import_file]" required>
+                            {% do import_form.import_file.setRendered %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">{{ 'Upload'|trans({}, 'dpdclassic') }}</button>
+                        {{ form_rest(import_form) }}
+                    </form>
+                </div>
+
+                {# ---------------- Configure sender tab ---------------- #}
+                <div id="configure_export_exaprint" class="tab-pane {{ current_tab == 'configure_export_exaprint' ? 'active' : '' }}">
+                    <form action="{{ path('dpdclassic.update-sender') }}" method="POST">
+
+                        {% for field in ['name', 'addr', 'addr2', 'zipcode', 'city', 'tel', 'mobile', 'mail'] %}
+                            {% set child = attribute(export_exaprint_form, field) %}
+                            <div class="mb-3">
+                                <label for="exaprint_{{ field }}" class="form-label">{{ child.vars.label }} :</label>
+                                <input type="{{ field == 'mail' ? 'email' : 'text' }}" id="exaprint_{{ field }}"
+                                       name="{{ export_exaprint_form.vars.full_name }}[{{ field }}]"
+                                       value="{{ child.vars.value }}" class="form-control"
+                                       {{ field != 'addr2' ? 'required' : '' }}>
+                                {% do child.setRendered %}
+                            </div>
+                        {% endfor %}
+
+                        <div class="mb-3">
+                            <label for="exaprint_expcode" class="form-label">{{ export_exaprint_form.expcode.vars.label }} :</label>
+                            <div class="input-group">
+                                <input type="password" id="exaprint_expcode" class="form-control"
+                                       name="{{ export_exaprint_form.vars.full_name }}[expcode]"
+                                       value="{{ export_exaprint_form.expcode.vars.value }}">
+                                <button type="button" class="btn btn-secondary" onclick="(function(b){var i=document.getElementById('exaprint_expcode');i.type=i.type==='password'?'text':'password';})(this);">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            {% do export_exaprint_form.expcode.setRendered %}
+                        </div>
+
+                        <div class="mb-3">
+                            <button type="submit" name="save_mode" value="stay" class="btn btn-sm btn-success">{{ 'Save changes'|trans({}, 'dpdclassic') }} <i class="bi bi-check-lg"></i></button>
+                        </div>
+                        {{ form_rest(export_exaprint_form) }}
+                    </form>
+                </div>
+
+                {# ---------------- Price slices tab ---------------- #}
+                <div id="prices_slices_tab" class="tab-pane {{ current_tab == 'prices_slices_tab' ? 'active' : '' }}">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <form action="{{ path('dpdclassic.freeshipping') }}" method="post" id="freeshippingform">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input freeshipping-activation-dpdclassic" type="checkbox"
+                                                   id="freeshipping_switch"
+                                                   name="{{ freeshipping_form.vars.full_name }}[freeshipping]" value="true"
+                                                   {{ free_shipping_enabled ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="freeshipping_switch">{{ freeshipping_form.freeshipping.vars.label }}</label>
+                                        </div>
+                                        {% do freeshipping_form.freeshipping.setRendered %}
+                                        {{ form_rest(freeshipping_form) }}
+                                    </form>
+                                </div>
+
+                                <div class="col-md-6" id="freeshipping-from-dpdclassic" {{ free_shipping_enabled ? 'style="display:none;"' : '' }}>
+                                    <form action="{{ path('dpdclassic.freeshipping_amount') }}" method="post">
+                                        <div class="input-group">
+                                            <span class="input-group-text {{ free_shipping_amount ? 'alert-success' : '' }}">{{ 'Or activate free shipping from'|trans({}, 'dpdclassic') }}</span>
+                                            <input type="number" step="0.01" class="form-control"
+                                                   name="{{ freeshipping_amount_form.vars.full_name }}[amount]"
+                                                   value="{{ free_shipping_amount == 0 ? '' : free_shipping_amount }}">
+                                            {% do freeshipping_amount_form.amount.setRendered %}
+                                            <span class="input-group-text">{{ currency_symbol }}</span>
+                                            <button class="btn btn-primary" type="submit">{{ 'Save'|trans({}, 'dpdclassic') }}</button>
+                                        </div>
+                                        {{ form_rest(freeshipping_amount_form) }}
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="table-prices-dpdclassic" {{ free_shipping_enabled ? 'style="display:none;"' : '' }}>
+                        {% for area in areas %}
+                            <div class="table-responsive mb-4">
+                                <table class="table table-striped">
+                                    <caption class="clearfix">
+                                        {{ 'Area : '|trans({}, 'dpdclassic') }}{{ area.name }}
+                                        {% if is_granted('CREATE', {resource: 'admin.module', module: 'DpdClassic'}) %}
+                                            <a class="btn btn-primary btn-sm float-end" title="{{ 'Create a new price slice'|trans({}, 'dpdclassic') }}"
+                                               data-bs-toggle="modal" data-bs-target="#price_slice_create_dialog_{{ area.id }}">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </a>
+                                        {% endif %}
+                                    </caption>
+                                    <thead>
+                                    <tr>
+                                        <th>{{ 'Weight up to ... (kg)'|trans({}, 'dpdclassic') }}</th>
+                                        <th>{{ 'Price (%sym)'|trans({'%sym': currency_symbol}, 'dpdclassic') }}</th>
+                                        <th>{{ 'Actions'|trans({}, 'dpdclassic') }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for slice in area.slices %}
+                                        {% set dialog_id = area.id ~ '_' ~ (slice.max_weight|replace({'.': '-'})) %}
+                                        <tr>
+                                            <td>{{ slice.max_weight }}</td>
+                                            <td>{{ slice.price }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    {% if is_granted('UPDATE', {resource: 'admin.module', module: 'DpdClassic'}) %}
+                                                        <a class="btn btn-secondary btn-sm" title="{{ 'Edit this price slice'|trans({}, 'dpdclassic') }}"
+                                                           data-bs-toggle="modal" data-bs-target="#price_slice_edit_dialog_{{ dialog_id }}">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                        <a class="btn btn-secondary btn-sm" title="{{ 'Delete this price slice'|trans({}, 'dpdclassic') }}"
+                                                           data-bs-toggle="modal" data-bs-target="#price_slice_delete_dialog_{{ dialog_id }}">
+                                                            <i class="bi bi-trash"></i>
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {# Create dialog (raw POST: edit-prices reads $request->request->get(), flat names) #}
+                            <div class="modal fade" id="price_slice_create_dialog_{{ area.id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <form action="{{ path('dpdclassic.edit-prices') }}" method="post">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">{{ 'Create a price slice'|trans({}, 'dpdclassic') }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" name="operation" value="add">
+                                                <input type="hidden" name="area" value="{{ area.id }}">
+                                                <div class="mb-3">
+                                                    <label for="weight_{{ area.id }}" class="form-label">{{ 'Weight up to ... (kg)'|trans({}, 'dpdclassic') }}</label>
+                                                    <input type="text" id="weight_{{ area.id }}" name="weight" value="1" class="form-control" pattern="\d+\.?\d*" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="price_{{ area.id }}" class="form-label">{{ 'Price (%sym)'|trans({'%sym': currency_symbol}, 'dpdclassic') }}</label>
+                                                    <input type="text" id="price_{{ area.id }}" name="price" value="1" class="form-control" pattern="\d+\.?\d*" required>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans({}, 'dpdclassic') }}</button>
+                                                <button type="submit" class="btn btn-primary">{{ 'Create'|trans({}, 'dpdclassic') }}</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            {% for slice in area.slices %}
+                                {% set dialog_id = area.id ~ '_' ~ (slice.max_weight|replace({'.': '-'})) %}
+                                {# Edit dialog #}
+                                <div class="modal fade" id="price_slice_edit_dialog_{{ dialog_id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <form action="{{ path('dpdclassic.edit-prices') }}" method="post">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">{{ 'Edit a price slice'|trans({}, 'dpdclassic') }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="operation" value="add">
+                                                    <input type="hidden" name="area" value="{{ area.id }}">
+                                                    <input type="hidden" name="weight" value="{{ slice.max_weight }}">
+                                                    <label for="price_edit_{{ dialog_id }}" class="form-label">{{ 'Price (%sym)'|trans({'%sym': currency_symbol}, 'dpdclassic') }}</label>
+                                                    <input type="text" id="price_edit_{{ dialog_id }}" class="form-control" name="price" value="{{ slice.price }}" pattern="\d+\.?\d*" required>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans({}, 'dpdclassic') }}</button>
+                                                    <button type="submit" class="btn btn-primary">{{ 'Edit'|trans({}, 'dpdclassic') }}</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                {# Delete dialog #}
+                                <div class="modal fade" id="price_slice_delete_dialog_{{ dialog_id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <form action="{{ path('dpdclassic.edit-prices') }}" method="post">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">{{ 'Delete a price slice'|trans({}, 'dpdclassic') }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="operation" value="delete">
+                                                    <input type="hidden" name="area" value="{{ area.id }}">
+                                                    <input type="hidden" name="weight" value="{{ slice.max_weight }}">
+                                                    {{ 'Do you really want to delete this slice ?'|trans({}, 'dpdclassic') }}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans({}, 'dpdclassic') }}</button>
+                                                    <button type="submit" class="btn btn-danger">{{ 'Delete'|trans({}, 'dpdclassic') }}</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {# ---------------- Configuration tab ---------------- #}
+                <div id="configuration_tab" class="tab-pane {{ current_tab == 'config' ? 'active' : '' }}">
+                    <form action="{{ path('dpdclassic.config') }}" method="post">
+                        {% for choice in config_form.default_status.vars.choices %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       id="config_status_{{ choice.value }}"
+                                       name="{{ config_form.default_status.vars.full_name }}"
+                                       value="{{ choice.value }}"
+                                       {{ config_form.default_status.vars.value == choice.value ? 'checked' : '' }}>
+                                <label class="form-check-label" for="config_status_{{ choice.value }}">{{ choice.label }}</label>
+                            </div>
+                        {% endfor %}
+                        {% do config_form.default_status.setRendered %}
+                        <br>
+                        <button type="submit" name="save_mode" value="stay" class="btn btn-sm btn-success">{{ 'Save changes'|trans({}, 'dpdclassic') }} <i class="bi bi-check-lg"></i></button>
+                        {{ form_rest(config_form) }}
+                    </form>
+                </div>
+
+                {# ---------------- Tax rule tab ---------------- #}
+                <div id="tax_rule" class="tab-pane {{ current_tab == 'tax_rule' ? 'active' : '' }}">
+                    <br>
+                    <h3 class="h5">{{ 'DpdClassic Tax Rule configuration'|trans({}, 'dpdclassic') }}</h3>
+                    <form action="{{ path('dpd_classic_tax_rule_save') }}" method="post">
+                        <div class="mb-3">
+                            {{ form_label(tax_rule_form.tax_rule_id) }}
+                            {{ form_widget(tax_rule_form.tax_rule_id, {attr: {class: 'form-select'}}) }}
+                        </div>
+                        <button class="btn btn-secondary" type="submit">{{ 'Save'|trans }}</button>
+                        {{ form_rest(tax_rule_form) }}
+                    </form>
+                </div>
+
+            </div>
+        {% endif %}
+    </div>
+</div>

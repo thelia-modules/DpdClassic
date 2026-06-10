@@ -12,34 +12,4 @@
         <loop name="dpdclassic.urltracking" class="DpdClassic\Loop\DpdClassicUrlTracking" />
     </loops>
 
-    <forms>
-        <form name="export_exaprint_form" class="DpdClassic\Form\ExportExaprintForm" />
-        <form name="export_form" class="DpdClassic\Form\ExportForm" />
-        <form name="freeshipping_form" class="DpdClassic\Form\FreeShippingForm" />
-        <form name="import_form" class="DpdClassic\Form\ImportExaprintForm" />
-        <form name="config_form" class="DpdClassic\Form\ConfigurationForm" />
-        <form name="freeshipping_amount_form" class="DpdClassic\Form\FreeShippingAmountForm" />
-
-    </forms>
-
-    <hooks>
-        <hook id="dpdclassic.hook" class="DpdClassic\Hook\DpdClassicHook" scope="request">
-            <tag name="hook.event_listener" event="module.configuration" type="back" method="onModuleConfig" />
-            <tag name="hook.event_listener" event="module.config-js" type="back" method="onModuleConfigJs" />
-            <tag name="hook.event_listener" event="order.tab-content" type="back" method="onOrderModuleTab" />
-        </hook>
-    </hooks>
-
-    <!--<services>
-        <service id="send.dpdclassic.mail" class="DpdClassic\EventListeners\SendEMail" scope="request">
-            <argument type="service" id="thelia.parser" />
-            <argument type="service" id="mailer"/>
-            <tag name="kernel.event_subscriber"/>
-        </service>
-        <service id="api.dpdclassic" class="DpdClassic\EventListeners\APIListener" scope="request">
-            <argument type="service" id="service_container"/>
-            <tag name="kernel.event_subscriber"/>
-        </service>
-    </services>-->
-
 </config>

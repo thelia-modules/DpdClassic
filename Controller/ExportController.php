@@ -53,7 +53,6 @@ class ExportController extends BaseAdminController
 {
     // FONCTION POUR LE FICHIER D'EXPORT BY Maitre eroudeix@openstudio.fr
     // extended by bperche9@gmail.com
-    #[Route('/admin/module/DpdClassic/export', name: 'DpdClassic_export')]
     public static function harmonise($value, $type, $len)
     {
         switch ($type) {
@@ -92,9 +91,7 @@ class ExportController extends BaseAdminController
         return $value;
     }
 
-    /**
-     */
-    #[Route(', name=', name: '_export', methods: ['POST'])]
+    #[Route('/admin/module/DpdClassic/export', name: 'dpdclassic.export', methods: ['POST'])]
     public function exportFileAction(EventDispatcherInterface $eventDispatcher)
     {
         if (null !== $response = $this->checkAuth([AdminResources::MODULE], ['DpdClassic'], AccessManager::UPDATE)) {

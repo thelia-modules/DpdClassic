@@ -1,0 +1,26 @@
+{% if tracking_url is not null %}
+    <div class="card mt-3">
+        <div class="card-header">
+            {{ 'Export file for this order'|trans({}, 'dpdclassic') }}
+        </div>
+        <div class="card-body">
+            <form action="{{ path('dpdclassic.export') }}" method="post">
+                <input type="hidden"
+                       name="{{ export_form.vars.full_name }}[_token]"
+                       value="{{ export_form._token.vars.value }}">
+                <input type="hidden"
+                       name="{{ export_form.vars.full_name }}[new_status_id]"
+                       value="nochange">
+                <input type="hidden"
+                       name="{{ export_form.vars.full_name }}[{{ order_ref|replace({'.': '-'}) }}]"
+                       value="true">
+                <button type="submit" class="btn btn-sm btn-secondary" title="{{ 'Export'|trans({}, 'dpdclassic') }}">
+                    {{ 'Export'|trans({}, 'dpdclassic') }}
+                </button>
+            </form>
+            <br>
+            {{ 'Track parcel'|trans({}, 'dpdclassic') }}
+            <a href="{{ tracking_url }}" target="_blank" rel="noopener">{{ 'here'|trans({}, 'dpdclassic') }}</a>
+        </div>
+    </div>
+{% endif %}

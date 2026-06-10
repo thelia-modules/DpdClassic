@@ -18,10 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 class ConfigurationController extends BaseAdminController
 {
-    /**
-     * @Route("", name="_save", methods="POST")
-     */
-    #[Route('/admin/module/DpdClassic/config', name: 'DpdClassic_config')]
+    #[Route('/admin/module/DpdClassic/config', name: 'dpdclassic.config', methods: ['POST'])]
     public function configureAction()
     {
         if (null !== $response = $this->checkAuth([AdminResources::MODULE], ['DpdClassic'], [AccessManager::CREATE, AccessManager::UPDATE])) {
