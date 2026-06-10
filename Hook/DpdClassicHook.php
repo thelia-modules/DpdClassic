@@ -14,6 +14,8 @@ use DpdClassic\Form\TaxRuleForm;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Symfony\Component\Form\FormView;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Thelia\Core\Event\Hook\BaseHookRenderEvent;
+use Thelia\Core\Event\Hook\HookRenderBlockEvent;
 use Thelia\Core\Event\Hook\HookRenderEvent;
 use Thelia\Core\Form\TheliaFormFactory;
 use Thelia\Core\Hook\BaseHook;
@@ -87,7 +89,7 @@ class DpdClassicHook extends BaseHook
         ]));
     }
 
-    public function onOrderModuleTab(HookRenderEvent $event): void
+    public function onOrderModuleTab(BaseHookRenderEvent $event): void
     {
         $orderId = $event->getArgument('order_id');
         $order = $orderId !== null ? OrderQuery::create()->findPk((int) $orderId) : null;
@@ -103,11 +105,23 @@ class DpdClassicHook extends BaseHook
             $trackingUrl = sprintf('http://www.dpd.fr/traces_info_%s', $order->getDeliveryRef());
         }
 
-        $event->add($this->render('DpdClassic/dpdclassic-order-edit.html.twig', [
+        $content = $this->render('DpdClassic/dpdclassic-order-edit.html.twig', [
             'export_form' => $this->buildView(ExportForm::getName()),
             'order_ref' => $ref,
             'tracking_url' => $trackingUrl,
-        ]));
+        ]);
+
+        // The default-twig BO probes render hooks via has_hook(), which dispatches a
+        // HookRenderBlockEvent; the actual content is emitted through safe_hook() (HookRenderEvent).
+        if ($event instanceof HookRenderBlockEvent) {
+            $event->add(['id' => 'dpdclassic', 'content' => $content]);
+
+            return;
+        }
+
+        if ($event instanceof HookRenderEvent) {
+            $event->add($content);
+        }
     }
 
     private function buildView(string $formName): FormView
