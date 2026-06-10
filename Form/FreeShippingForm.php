@@ -14,7 +14,7 @@ use Thelia\Form\BaseForm;
  */
 class FreeShippingForm extends BaseForm
 {
-    public static function getName()
+    public static function getName(): string
     {
         return "freeshipping_form";
     }

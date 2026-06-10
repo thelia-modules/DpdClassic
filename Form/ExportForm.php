@@ -39,7 +39,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
  */
 class ExportForm extends BaseForm
 {
-    public static function getName()
+    public static function getName(): string
     {
         return "export_form";
     }

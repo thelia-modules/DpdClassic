@@ -24,6 +24,7 @@
 namespace DpdClassic\Loop;
 
 use Propel\Runtime\ActiveQuery\Criteria;
+use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Thelia\Core\Template\Loop\Order;
 use DpdClassic\DpdClassic;
 use Thelia\Model\OrderQuery;
@@ -35,7 +36,7 @@ use Thelia\Model\OrderQuery;
  */
 class DpdClassicOrders extends Order
 {
-    public function buildModelCriteria()
+    public function buildModelCriteria(): ModelCriteria
     {
         return OrderQuery::create()
             ->filterByDeliveryModuleId(DpdClassic::getModuleId())

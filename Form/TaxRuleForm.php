@@ -11,7 +11,7 @@ use Thelia\Model\TaxRuleI18nQuery;
 
 class TaxRuleForm extends BaseForm
 {
-    public static function getName()
+    public static function getName(): string
     {
         return "dpdclassic_tax_rule_form";
     }

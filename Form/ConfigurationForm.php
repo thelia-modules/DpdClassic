@@ -13,15 +13,12 @@ use Thelia\Form\BaseForm;
  */
 class ConfigurationForm extends BaseForm
 {
-    public static function getName()
+    public static function getName(): string
     {
         return "config_form";
     }
 
-    /**
-     * @return null
-     */
-    protected function buildForm()
+    protected function buildForm(): void
     {
         if (null === $data = DpdClassic::getConfigValue('default_status')){
             $data = DpdClassic::NO_CHANGE;

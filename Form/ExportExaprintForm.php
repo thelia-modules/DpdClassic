@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Constraints\Regex;
  */
 class ExportExaprintForm extends BaseForm
 {
-    public static function getName()
+    public static function getName(): string
     {
         return "export_exaprint_form";
     }

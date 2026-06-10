@@ -126,20 +126,20 @@ class DpdClassicHook extends BaseHook
         $dir = __DIR__ . '/../Config/';
 
         if (!is_readable($dir)) {
-            $errors[] = ['message' => $this->trans('Can\'t read Config directory'), 'file' => ''];
+            $errors[] = ['message' => $this->trans('Can\'t read Config directory', [], DpdClassic::DOMAIN_NAME), 'file' => ''];
         }
         if (!is_writable($dir)) {
-            $errors[] = ['message' => $this->trans('Can\'t write Config directory'), 'file' => ''];
+            $errors[] = ['message' => $this->trans('Can\'t write Config directory', [], DpdClassic::DOMAIN_NAME), 'file' => ''];
         }
 
         if ($handle = @opendir($dir)) {
             while (false !== ($file = readdir($handle))) {
                 if (strlen($file) > 5 && substr($file, -5) === '.json') {
                     if (!is_readable($dir . $file)) {
-                        $errors[] = ['message' => $this->trans('Can\'t read file'), 'file' => 'DpdClassic/Config/' . $file];
+                        $errors[] = ['message' => $this->trans('Can\'t read file', [], DpdClassic::DOMAIN_NAME), 'file' => 'DpdClassic/Config/' . $file];
                     }
                     if (!is_writable($dir . $file)) {
-                        $errors[] = ['message' => $this->trans('Can\'t write file'), 'file' => 'DpdClassic/Config/' . $file];
+                        $errors[] = ['message' => $this->trans('Can\'t write file', [], DpdClassic::DOMAIN_NAME), 'file' => 'DpdClassic/Config/' . $file];
                     }
                 }
             }
@@ -230,10 +230,5 @@ class DpdClassicHook extends BaseHook
         }
 
         return [];
-    }
-
-    private function trans(string $id): string
-    {
-        return $this->translator->trans($id, [], DpdClassic::DOMAIN_NAME);
     }
 }

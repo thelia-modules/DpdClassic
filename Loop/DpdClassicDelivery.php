@@ -34,7 +34,7 @@ use DpdClassic\DpdClassic;
  */
 class DpdClassicDelivery extends Delivery
 {
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         $moduleId = DpdClassic::getModuleId();
 
