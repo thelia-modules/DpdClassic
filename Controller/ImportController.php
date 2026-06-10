@@ -87,17 +87,18 @@ class ImportController extends BaseAdminController
         } catch (FormValidationException $e) {
             $con->rollback();
 
-            $this->setupFormErrorContext(
-                null,
-                $e->getMessage(),
-                $form
+            $this->getRequest()->getSession()->getFlashBag()->add(
+                'error',
+                $e->getMessage()
             );
 
-            return $this->render(
-                'module-configure',
+            return $this->generateRedirectFromRoute(
+                'admin.module.configure',
+                [],
                 [
                     'module_code' => DpdClassic::getModuleCode(),
-                    'current_tab' => 'import_exaprint'
+                    'current_tab' => 'import_exaprint',
+                    '_controller' => 'Thelia\\Controller\\Admin\\ModuleController::configureAction',
                 ]
             );
         }

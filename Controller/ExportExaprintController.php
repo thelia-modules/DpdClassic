@@ -104,21 +104,22 @@ class ExportExaprintController extends BaseAdminController
             $error_message = $e->getMessage();
         }
 
-        $this->setupFormErrorContext(
+        $this->getRequest()->getSession()->getFlashBag()->add(
+            'error',
             Translator::getInstance()->trans(
                 "Error while updating the file with sender information",
                 [],
                 DpdClassic::DOMAIN_NAME
-            ),
-            $error_message,
-            $form
+            ) . ': ' . $error_message
         );
 
-        return $this->render(
-            'module-configure',
+        return $this->generateRedirectFromRoute(
+            'admin.module.configure',
+            [],
             [
                 'module_code' => DpdClassic::getModuleCode(),
-                'current_tab' => "configure_export_exaprint"
+                'current_tab' => 'configure_export_exaprint',
+                '_controller' => 'Thelia\\Controller\\Admin\\ModuleController::configureAction',
             ]
         );
     }
