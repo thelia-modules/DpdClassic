@@ -15,7 +15,7 @@ use Thelia\Tools\URL;
 #[Route('/admin/module/DpdClassic/tax_rule', name: 'dpd_classic_tax_rule_')]
 class TaxRuleController extends BaseAdminController
 {
-    #[Route('/save', name: 'save')]
+    #[Route('/save', name: 'save', methods: ['POST'])]
     public function saveTaxRule()
     {
         if (null !== $response = $this->checkAuth(AdminResources::MODULE, DpdClassic::DOMAIN_NAME, AccessManager::UPDATE)) {
