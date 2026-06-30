@@ -46,6 +46,10 @@ class FreeShippingController extends BaseAdminController
     #[Route('/admin/module/DpdClassic/freeshipping_amount', name: 'dpdclassic.freeshipping_amount', methods: ['POST'])]
     public function amountAction()
     {
+        if (null !== $response = $this->checkAuth([AdminResources::MODULE], ["dpdclassic"], AccessManager::UPDATE)) {
+            return $response;
+        }
+
         $form = $this->createForm(FreeShippingAmountForm::getName());
 
         try {
