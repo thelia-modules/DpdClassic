@@ -3,13 +3,4 @@
 <config xmlns="http://thelia.net/schema/dic/config"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
-
-    <loops>
-        <loop name="dpdclassic.check.rights" class="DpdClassic\Loop\CheckRightsLoop" />
-        <loop name="dpdclassic.delivery" class="DpdClassic\Loop\DpdClassicDelivery" />
-        <loop name="dpdclassic.orders" class="DpdClassic\Loop\DpdClassicOrders" />
-        <loop name="dpdclassic" class="DpdClassic\Loop\DpdClassicPrice" />
-        <loop name="dpdclassic.urltracking" class="DpdClassic\Loop\DpdClassicUrlTracking" />
-    </loops>
-
 </config>
