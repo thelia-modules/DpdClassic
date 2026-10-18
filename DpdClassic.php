@@ -18,7 +18,7 @@ use Symfony\Component\Finder\SplFileInfo;
 use Propel\Runtime\Propel;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Thelia\Core\Install\Database;
-use Thelia\Exception\OrderException;
+use Thelia\Domain\Order\Exception\OrderException;
 use Thelia\Model\Country;
 use Thelia\Model\OrderPostage;
 use Thelia\Model\State;
@@ -68,7 +68,7 @@ class DpdClassic extends AbstractDeliveryModuleWithState
         }
     }
 
-    public function postActivation(ConnectionInterface $con = null): void
+    public function postActivation(?ConnectionInterface $con = null): void
     {
         $database = new Database($con->getWrappedConnection());
 
@@ -160,7 +160,7 @@ class DpdClassic extends AbstractDeliveryModuleWithState
 
     public function getOrderPostage($country, $weight, $locale, $cartAmount = 0): OrderPostage
     {
-        $freeShipping = Dpdclassic::getConfigValue('freeshipping');
+        $freeShipping = DpdClassic::getConfigValue('freeshipping');
         $postage=0;
         $areasIds = $this->getAllAreasForCountry($country);
         $foundArea = false;
